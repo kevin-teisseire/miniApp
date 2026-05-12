@@ -3,6 +3,7 @@ from flask_cors import CORS
 from flask import request
 from flask import jsonify
 from flask import send_from_directory
+import time
 import sqlite3
 import os
 
@@ -57,6 +58,7 @@ def fetch_all_posts(cursor, limit, offset):
         "image_url" : f"http://localhost:8000/uploads/{p["profil_image"]}",
         "first_name": p["first_name"]
     } for p in rows]
+
 
 # ====== Routes ======
 
@@ -144,7 +146,7 @@ def login():
     else:
         return jsonify({
             "status": "error", 
-            "message": "failed to login",
+            "message": "user doesn't exist",
         }), 401
     
 # ------ Upload route ------ 
@@ -169,11 +171,20 @@ def upload():
     # Format DB response 
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
+    # Get user ID
+    cursor.execute("SELECT * FROM users WHERE email = ?", (email,))
+    user = cursor.fetchone()
+    user_id = user["id"]
     # Check for new data
     if new_image:
-        filepath = os.path.join(upload_folder, new_image.filename)
+        # Secure file name
+        ext = os.path.splitext(new_image.filename)[1]
+        filename = f"user_{user_id}_{int(time.time())}{ext}"
+        # Create path
+        filepath = os.path.join(upload_folder, filename)
+        # Save image
         new_image.save(filepath)
-        img_url = new_image.filename
+        img_url = filename
         cursor.execute("UPDATE users SET profil_image = ? WHERE email = ?", (img_url, email))
     if new_description:
         cursor.execute("UPDATE users SET description = ? WHERE email = ?", (new_description, email))
@@ -184,7 +195,6 @@ def upload():
     if new_email:
         cursor.execute("UPDATE users SET email = ? WHERE email = ?", (new_email, email))
         email = new_email
-
     conn.commit()
     # Get user data after modification
     cursor.execute("SELECT * FROM users WHERE email = ?", (email,))
