@@ -43,6 +43,8 @@ export const pageWrapper = document.getElementById('page-wrapper')
 export const postNavPages = document.getElementById('post-nav-pages')
 export const forumNextBtn = document.getElementById('forum-next-btn')
 export const forumPrevBtn = document.getElementById('forum-prev-btn')
+export const newPostTitle = document.getElementById('new-post-title-input')
+export const newPostDescription = document.getElementById('new-post-description-input')
 
 
 

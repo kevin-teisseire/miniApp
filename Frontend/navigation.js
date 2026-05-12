@@ -4,7 +4,7 @@ import {signupTxt, loginTxt, authPop, loginWrapper, signupWrapper, navBar, forum
         error_userExists, customUploader, imgUploader, formSubmitBtn, modifyName, modifyDescription, 
         modifyEmail, modifyImage, modifySurname, error_wrongCred, cancelBtn, profileModBtn, profileForm, 
         forumSection, searchSection, forumBody, sendNewPostBtn, cancelNewPostBtn,
-        newPostPopup, postStatusMessage, createNewPostBtn, pageWrapper, postNavPages, forumNextBtn, forumPrevBtn} from "./dom.js"
+        newPostPopup, postStatusMessage, createNewPostBtn, pageWrapper, postNavPages, forumNextBtn, forumPrevBtn, newPostDescription, newPostTitle} from "./dom.js"
 
 import {loadForum, login, signUp, uploadForm, post} from './API.js'
 
@@ -15,9 +15,12 @@ import {loadForum, login, signUp, uploadForm, post} from './API.js'
 // let currentSection = ""
 
 /* ------ General ------- */
+const STATE = {
+    forumPage: 1,
+    maxPage: 1,
+    currentUser: null
+}
 
-let forumPage = 1
-let maxPage = 1
 
 const show = (el) => {
     el.forEach(el => {
@@ -52,14 +55,12 @@ function displayInfos(userObj){
 
 // Login text link to signup
 signupTxt.addEventListener('click', () => {
-    show([signupWrapper])
-    hide([loginWrapper])
+    sectionNavigation([loginWrapper], [signupWrapper])
 })
 
 // Signup text to login
 loginTxt.addEventListener('click', () => {
-    hide([signupWrapper])
-    show([loginWrapper])
+    sectionNavigation([signupWrapper], [loginWrapper])
 })
 
 // Login Button
@@ -76,9 +77,8 @@ loginBtn.addEventListener("click", async () => {
         if (res.data.status === "success"){
             displayInfos(res.currentUser);
             // Load forum messages
-            await loadAndRenderForum(forumPage)
-            hide([authPop]);
-            show([main, profileSection, profileInfos, navBar]);
+            await loadAndRenderForum(STATE.forumPage)
+            sectionNavigation([authPop], [main, profileSection, profileInfos, navBar])
             pageWrapper.style.justifyContent = ''
 
         // User not found in DB
@@ -102,9 +102,8 @@ signupBtn.addEventListener("click", async () => {
     } else {
         const data = await signUp(firstName, lastName, email, passWord);
         if (data.status === "success"){
-            hide([signupWrapper])
-            show([loginWrapper])
-            await loadAndRenderForum(forumPage)
+            sectionNavigation([signupWrapper], [loginWrapper])
+            await loadAndRenderForum(STATE.forumPage)
         } else if (data.status === "error" && data.message === "user exists"){
            show([error_userExists])
         }
@@ -157,21 +156,18 @@ formSubmitBtn.addEventListener("click", async (e) => {
         formData.append("new_surname", modifySurname.value)
     }
     const user = await uploadForm(formData);
-    hide([profileForm]);
-    show([profileSection, profileInfos]);
+    sectionNavigation([profileForm], [profileSection, profileInfos])
     displayInfos(user);
 })
 
 // Cancel modifications button
 cancelBtn.addEventListener("click", () => {
-    hide([profileForm]);
-    show([profileInfos]);
+    sectionNavigation([profileForm], [profileInfos])
 })
 
 // Modify user infos button
 profileModBtn.addEventListener("click", () => {
-    hide([profileInfos])
-    show([profileForm])
+    sectionNavigation([profileInfos], [profileForm])
     // Get stored user data 
     const currentUser = JSON.parse(localStorage.getItem("user"))
     
@@ -187,9 +183,7 @@ profileModBtn.addEventListener("click", () => {
 
 
 /* ------ Navbar ------ */
-
-// Menu animation
-navBar.addEventListener("click", (event) => {
+function menuNavigation(){
     const menuIdList = ['nav-profile', 'nav-search', 'nav-forum']
     const sectionIDs = ['profile-section', 'forum-section', 'search-section']
     const clickedElement = event.target.closest("li");
@@ -208,6 +202,11 @@ navBar.addEventListener("click", (event) => {
         hide([section])
     })
     show([correspondingSection])
+}
+
+// Menu animation
+navBar.addEventListener("click", (event) => {
+    menuNavigation()
 })
 
 function showMenu(name){
@@ -274,12 +273,12 @@ function createForumPostsHtml(element){
 async function loadAndRenderForum(page=1){
     forumBody.innerHTML = ''
     const data = await loadForum(page)
-    maxPage = Math.ceil(data.total_pages)
+    STATE.maxPage = Math.ceil(data.total_pages)
     if (data.posts){
         data.posts.forEach(el => {
             createForumPostsHtml(el)
         })
-        postNavPages.textContent = `${forumPage} / ${maxPage}`
+        postNavPages.textContent = `${STATE.forumPage} / ${STATE.maxPage}`
     } else {
         postStatusMessage.textContent = 'No post in this forum yet'
     }
@@ -287,31 +286,48 @@ async function loadAndRenderForum(page=1){
 
 
 // Display existing posts
+async function renderPosts(){
+    const user = JSON.parse(localStorage.getItem("user"))
+    const res = await post(newPostTitle.value, newPostDescription.value, user["userId"])
+    return res
+}
+
+function sectionNavigation(toHide, toShow){
+    hide(toHide)
+    show(toShow)
+}
+
+function cleanInputs(inputList){
+    inputList.forEach(el => {
+        el.value = ''
+    })
+}
+
+// Send a new post button
 createNewPostBtn.addEventListener("click", () => {
     show([newPostPopup])
 })
 
-// Send a new post button
 sendNewPostBtn.addEventListener("click", async() => {
-    const newPostTitleValue = document.getElementById('new-post-title-input').value
-    const newPostDescriptionValue = document.getElementById('new-post-description-input').value
-    const user = JSON.parse(localStorage.getItem("user"))
-    const newPost = await post(newPostTitleValue, newPostDescriptionValue, user["userId"])
-    hide([newPostPopup])
-    show([postStatusMessage])
+    const newPost = await renderPosts()
     displayPostStatusMessage(newPost.status)
+    sectionNavigation([newPostPopup], [postStatusMessage])
+})
+
+cancelNewPostBtn.addEventListener("click", async() => {
+    sectionNavigation([newPostPopup], [postStatusMessage])
+    cleanInputs([newPostDescription, newPostTitle])
 })
 
 // Forum pages navigation
 forumNextBtn.addEventListener("click", async() => {
-    console.log(forumPage)
-    forumPage++;
-    await loadAndRenderForum(forumPage);
+    STATE.forumPage++;
+    await loadAndRenderForum(STATE.forumPage);
 })
 
 forumPrevBtn.addEventListener("click", async() => {
-    forumPage--;
-    await loadAndRenderForum(forumPage);
+    STATE.forumPage--;
+    await loadAndRenderForum(STATE.forumPage);
 })
 
 // Display new post validation message
@@ -319,7 +335,7 @@ async function displayPostStatusMessage(status){
     if (status === "success"){
         postStatusMessage.style.color = 'green'
         postStatusMessage.textContent = 'Post sent succesfully'
-        await loadAndRenderForum(forumPage)
+        await loadAndRenderForum(STATE.forumPage)
     } else {
         postStatusMessage.style.color = 'red'
         postStatusMessage.textContent = 'Error : Post not sent'
