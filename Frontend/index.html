@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <title>Document</title>
+</head>
+<body>
+    <div id="new-post-popup" class="new-post-popup hidden">
+        <div class="popup-content-wrapper">
+            <h5 class="title-text-large">Add a new post</h5>
+            <div class="popup-body">
+                <div class="input-wrapper">
+                    <p class="title-text-small">Topic</p>
+                    <input id="new-post-title-input"type="text" placeholder="Enter a title" class="post-input" autocomplete="new-password">
+                </div>
+                <div class="multi-input-wrapper">
+                    <p class="title-text-small">Description</p>
+                    <textarea id="new-post-description-input"name="post-description" id="post-description" class="post-multi-input" placeholder="What's on your mind ?"></textarea>
+                </div>
+            </div>
+           <div class="flex-row-center">
+                    <button id="send-new-post-btn" class="auth-btns">Send</button>
+                    <button id="cancel-new-post-btn" class="auth-btns">Cancel</button>
+            </div>
+        </div>
+    </div>
+    <div id="page-wrapper">
+        <nav id="navbar">
+            <ul class="navbar">
+                <li id="nav-profile" class="nav-menu unselected" data-section-id="profile-section">Profile</li>
+                <li id="nav-forum" class="nav-menu unselected" data-section-id="forum-section">Forum</li>
+                <li id="nav-search" class="nav-menu unselected" data-section-id="search-section">Search</li>
+            </ul>
+        </nav>
+        <div id="auth-popup">
+            <div class="login-wrapper">
+                <h1>Login</h1>
+                <p id="wrong-cred-error" class="error-message"> Wrong credentials !</p>
+                <div class="input-container">
+                    <div class="input-wrapper">
+                        <p>Email</p>
+                        <input id="login-email-ipt" type="email">
+                    </div>
+                    <div class="input-wrapper">
+                        <p>Passsword</p>
+                        <input id="login-pw-ipt" type="password">
+                    </div>
+                </div>
+                <p id="signup-txt">Don't have an account ? <em> Sign up</em></p>
+                <button id="login-btn" class="auth-btns">Login</button>
+            </div>
+            <div class="signup-wrapper">
+                <h1>Signup</h1>
+                <p id="user-exists-error" class="error-message"> User already exists !</p>
+                <div class="input-container">
+                    <div class="input-wrapper">
+                        <p>First name</p>
+                        <input id="first-name-ipt" type="text">
+                    </div>
+                    <div class="input-wrapper">
+                        <p>Last name</p>
+                        <input id="last-name-ipt" type="text">
+                    </div>
+                    <div class="input-wrapper">
+                        <p>Email</p>
+                        <input id="signup-email-ipt" type="text">
+                    </div>
+                    <div class="input-wrapper">
+                        <p>Passsword</p>
+                        <input id="signup-pw-ipt" type="password">
+                    </div>
+                    <div class="input-wrapper">
+                        <p>Passsword confirmation</p>
+                        <input id="pw-conf-ipt" type="password">
+                    </div>
+                </div>
+                <p id="login-txt">Already have an account ? <em>log in</em></p>
+                <button id="signup-btn" class="auth-btns">Sign up</button>
+            </div>
+        </div>
+        <div class="main-container">
+            <div id="profile-section">
+                <div id="profile-infos">
+                    <h2 id="greeting"></h2>
+                    <div class="infos-body">
+                        <div class="profile-image" id="profile-img"></div>
+                        <h3>First name</h3>
+                        <p id="profile-form-name"></p>
+                        <h3>Last name</h3>
+                        <p id="profile-form-surname"></p>
+                        <h3>Email</h3>
+                        <p id="profile-form-email"></p>
+                        <h3>Description</h3>
+                        <p id="profile-description">Add a description to your profile</p>
+                    </div>
+                    <button id="profile-modify-btn" class="auth-btns">Modify</button>
+                </div>
+                <div id="profile-modify-form">
+                    <label for="modify-profile-img" class="modify-img-label">Image</label>
+                        <div class="profile-image" id="modify-profile-img"></div>
+                        <input type="file" placeholder="Upload image" id="profil-img-uploader" hidden>
+                        <div id="custom-uploader">Upload</div>
+                    <label for="modify-profile-form-name">First name</label>
+                        <input id="modify-profile-form-name" type="text">
+                    <label for="modify-profile-form-surname">Last name</label>
+                        <input id="modify-profile-form-surname" type="text">
+                    <label for="modify-profile-form-email">Email</label>
+                        <input id="modify-profile-form-email" type="text">
+                    <label for="modify-profile-form-description">Description</label>
+                        <textarea id="modify-profile-form-description" class="profile-multi-input"></textarea>
+                    <div class="flex-row-btns">
+                        <button type="button" id="form-submit-btn" class="auth-btns">Save</button>
+                        <button type="button" id="form-cancel-btn" class="auth-btns">Cancel</button>
+                    </div>
+                </div>
+            </div>
+            <div id="forum-section">
+                <div id="forum-error">
+                    <h3 id="post-status-message" class="status-message"></h3>
+                </div>
+                <div id="forum-body"></div>
+                <div class="flex-row-center">
+                    <i id="forum-prev-btn" class="fa-solid fa-angle-left"></i>
+                    <p id="post-nav-pages"></p>
+                    <i id="forum-next-btn" class="fa-solid fa-angle-right"></i>
+                </div>
+                <button id="create-new-post-btn">New post</button>
+            </div>
+            <div id="search-section"></div>
+        </div>
+    </div>
+<script type="module" src="main.js"></script>
+</body>
+</html>
