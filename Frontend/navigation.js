@@ -63,8 +63,8 @@ loginTxt.addEventListener('click', () => {
     sectionNavigation([signupWrapper], [loginWrapper])
 })
 
-// Login Button
-loginBtn.addEventListener("click", async () => {
+// Login 
+async function logUserIn(){
     const email = document.getElementById('login-email-ipt').value;
     const passWord = document.getElementById('login-pw-ipt').value;
     // Check infos missing
@@ -80,17 +80,20 @@ loginBtn.addEventListener("click", async () => {
             await loadAndRenderForum(STATE.forumPage)
             sectionNavigation([authPop], [main, profileSection, profileInfos, navBar])
             pageWrapper.style.justifyContent = ''
-
+            showMenu(profileMenu)
         // User not found in DB
         } else {
             show([error_wrongCred])
         }
     };
-    showMenu(profileMenu)
+}
+
+loginBtn.addEventListener("click", () => {
+    logUserIn()
 });
 
 // Signup button
-signupBtn.addEventListener("click", async () => {
+async function signUserUp(){
     // Save input values
     const firstName = document.getElementById('first-name-ipt').value;
     const lastName = document.getElementById('last-name-ipt').value;
@@ -108,6 +111,10 @@ signupBtn.addEventListener("click", async () => {
            show([error_userExists])
         }
     }
+}
+
+signupBtn.addEventListener("click", () => {
+    signUserUp()
 });
 
 /* ------ Profile ------ */
@@ -119,7 +126,7 @@ customUploader.addEventListener("click", () => {
 
 let selectedFile = null
 
-imgUploader.addEventListener("change", () => {
+function previewImage(){
     // Preview uploaded image
     const file = imgUploader.files[0]
     selectedFile = file
@@ -132,11 +139,14 @@ imgUploader.addEventListener("change", () => {
             URL.revokeObjectURL(previewSrc);
         };
     }
+}
+
+imgUploader.addEventListener("change", () => {
+    previewImage()
 })
 
 // Submit modifications button
-formSubmitBtn.addEventListener("click", async (e) => {
-    e.preventDefault();
+function createFormData(){
     const formData = new FormData()
     const currentUser = JSON.parse(localStorage.getItem("user"))
     formData.append("email", currentUser["email"])
@@ -155,6 +165,12 @@ formSubmitBtn.addEventListener("click", async (e) => {
     if (modifySurname.value){
         formData.append("new_surname", modifySurname.value)
     }
+    return formData
+}
+
+formSubmitBtn.addEventListener("click", async (e) => {
+    e.preventDefault();
+    const formData = createFormData()
     const user = await uploadForm(formData);
     sectionNavigation([profileForm], [profileSection, profileInfos])
     displayInfos(user);
@@ -166,19 +182,26 @@ cancelBtn.addEventListener("click", () => {
 })
 
 // Modify user infos button
+function placeHolderText(input, text){
+    input.placeholder = text
+}
+
+function profilePlaceholders(user){
+    placeHolderText(modifyName, user["firstName"])
+    placeHolderText(modifySurname, user["firstName"])
+    placeHolderText(modifyEmail, user["firstName"])
+    if (user["description"]){
+        placeHolderText(modifyDescription, user["description"])
+    }
+    modifyImage.style.backgroundImage = `url(${user["imgUrl"]})`
+}
+
 profileModBtn.addEventListener("click", () => {
     sectionNavigation([profileInfos], [profileForm])
     // Get stored user data 
     const currentUser = JSON.parse(localStorage.getItem("user"))
-    
     // Add values for input placeholders
-    modifyName.placeholder = currentUser["firstName"]
-    modifySurname.placeholder = currentUser["lastName"]
-    modifyEmail.placeholder = currentUser["email"]
-    if (currentUser["description"]){
-        modifyDescription.placeholder = currentUser["description"]
-    }
-    modifyImage.style.backgroundImage = `url(${currentUser["imgUrl"]})`
+    profilePlaceholders(currentUser)
 })
 
 
@@ -312,6 +335,7 @@ sendNewPostBtn.addEventListener("click", async() => {
     const newPost = await renderPosts()
     displayPostStatusMessage(newPost.status)
     sectionNavigation([newPostPopup], [postStatusMessage])
+    cleanInputs([newPostDescription, newPostTitle])
 })
 
 cancelNewPostBtn.addEventListener("click", async() => {
