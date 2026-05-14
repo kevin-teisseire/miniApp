@@ -3,9 +3,14 @@ from flask_cors import CORS
 from flask import request
 from flask import jsonify
 from flask import send_from_directory
+from dotenv import load_dotenv
+import psycop
 import time
 import sqlite3
 import os
+import psycopg2
+
+load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
@@ -14,7 +19,7 @@ CORS(app)
 
 # ------ Init Database ------ 
 def initDB():
-    conn = sqlite3.connect("database.db")
+    conn = psycopg2.connect(os.getenv("DATABASE_URL"))
     cursor = conn.cursor()
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS users (
@@ -81,7 +86,7 @@ def signup():
         email = data.get("email")
         password = data.get("password")
 
-        conn = sqlite3.connect("database.db")
+        conn = psycopg2.connect("database.db")
         cursor = conn.cursor()
         # Check if user exists
         cursor.execute(
@@ -122,9 +127,8 @@ def login():
     email = req.get("email")
     password = req.get("password")
     # Connect to DB
-    conn = sqlite3.connect("database.db")
-    conn.row_factory = sqlite3.Row
-    cursor = conn.cursor()
+    conn = psycopg2.connect("database.db")
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     # Get user
     cursor.execute(
         "SELECT * FROM users WHERE email = ? AND password = ?", (email, password)
@@ -167,10 +171,9 @@ def upload():
     new_surname = request.form.get("new_surname")
     new_email = request.form.get("new_email")
     # Connect to DB
-    conn = sqlite3.connect("database.db")
+    conn = psycopg2.connect("database.db")
     # Format DB response 
-    conn.row_factory = sqlite3.Row
-    cursor = conn.cursor()
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     # Get user ID
     cursor.execute("SELECT * FROM users WHERE email = ?", (email,))
     user = cursor.fetchone()
@@ -225,9 +228,8 @@ def uploaded_file(filename):
 @app.route("/get-forum", methods=["GET"])
 
 def getMessages():
-    conn = sqlite3.connect("database.db")
-    conn.row_factory = sqlite3.Row
-    cursor = conn.cursor()
+    conn = psycopg2.connect("database.db")
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     page = request.args.get("page", 1, type=int)
     limit = 4
     offset = (page - 1) * limit
@@ -249,9 +251,8 @@ def getMessages():
 @app.route("/post", methods=["POST"])
 
 def post():
-    conn = sqlite3.connect("database.db")
-    conn.row_factory = sqlite3.Row
-    cursor = conn.cursor()
+    conn = psycopg2.connect("database.db")
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     req = request.get_json()
     title = req.get("title")
     description = req.get("description")
