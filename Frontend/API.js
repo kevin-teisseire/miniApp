@@ -1,3 +1,7 @@
+/* ========================
+            API
+=========================== */
+
 /* ------ Log in ------ */
 
 export async function login(email, passWord){
@@ -13,10 +17,10 @@ export async function login(email, passWord){
     })
     const data = await res.json();
     console.log(data)
-    let currentUser = null
+    let user = null
     if (data.status === "success"){
         // save data 
-        const user = {
+        user = {
             firstName: data.first_name,
             lastName: data.last_name,
             email: data.email,
@@ -24,12 +28,10 @@ export async function login(email, passWord){
             imgUrl: data.img_url,
             userId: data.user_id
         } 
-        localStorage.setItem("user", JSON.stringify(user));
-        currentUser = JSON.parse(localStorage.getItem("user"));
-    };
+    }
     return {
-        data, 
-        currentUser
+            data, 
+            user
     }
 };
 
@@ -49,15 +51,18 @@ export async function signUp(firstName, lastName, email, passWord){
         })
     })
     const data = await res.json()
+    let user = null
     if (data.status === "success"){
-        const user = {
+        user = {
             firstName: firstName,
             lastName: lastName,
             email: email,
             userId: data.user_id
         }
-        localStorage.setItem("user", JSON.stringify(user))
-        return data
+        return {
+            data,
+            user
+        }
     }
 };
 
@@ -78,7 +83,6 @@ export async function uploadForm(formData){
         email: data.email, 
         imgUrl: data.image_url
     }
-    localStorage.setItem("user", JSON.stringify(user));
     return user
 }
 
