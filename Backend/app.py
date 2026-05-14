@@ -23,7 +23,7 @@ def initDB():
     cursor = conn.cursor()
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id SERIAL PRIMARY KEY AUTOINCREMENT,
                    first_name TEXT,
                    last_name TEXT,
                    email TEXT,
@@ -34,7 +34,7 @@ def initDB():
         """) 
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS forum_posts (
-                   id INTEGER PRIMARY KEY AUTOINCREMENT,
+                   id SERIAL PRIMARY KEY AUTOINCREMENT,
                    user_id INTEGER,
                    title TEXT,
                    content TEXT,
