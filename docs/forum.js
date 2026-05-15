@@ -37,7 +37,12 @@ function createForumPostsHtml(element){
     const postDate = document.createElement("p")
     postDate.classList.add("body-text-small")
     postDate.id = "post-date"
-    postDate.textContent = element.date.split(" ")[0]
+    const date = new Date(element.date)
+    postDate.textContent = date.toLocaleDateString("fr-FR", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric"
+    })
     postBodyLeft.appendChild(postDate)
     // Right card side
     const postBodyRight = document.createElement("div")
