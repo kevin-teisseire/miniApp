@@ -49,7 +49,7 @@ def initDB():
                    title TEXT,
                    content TEXT,
                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                   user_id INTEGER REFERENCES users(id),
+                   user_id INTEGER REFERENCES users(id)
         )
     """)
     conn.commit()
@@ -70,7 +70,7 @@ def fetch_all_posts(cursor, limit, offset):
         "description" : p["content"],
         "date": p["created_at"],
         "user": p["user_id"],
-        "image_url" : f"http://localhost:8000/uploads/{p["image_url"]}",
+        "image_url" : p["image_url"],
         "first_name": p["first_name"]
     } for p in rows]
 
@@ -164,7 +164,7 @@ def login():
             "last_name": user["last_name"],
             "description": user["description"],
             "user_id": user["id"],
-            "img_url": f"http://localhost:8000/uploads/{user["image_url"]}"
+            "img_url": user["image_url"]
         }), 200
     else:
         return jsonify({
