@@ -117,8 +117,9 @@ forumNextBtn.addEventListener("click", async() => {
 forumPrevBtn.addEventListener("click", async() => {
     if (STATE.forumPage > 1){
         STATE.forumPage--;
+        await loadAndRenderForum(STATE.forumPage);
     }
-    await loadAndRenderForum(STATE.forumPage);
+    
 })
 
 // Display new post validation message
