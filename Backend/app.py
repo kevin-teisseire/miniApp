@@ -25,7 +25,9 @@ CORS(app)
 
 # ------ Init Database ------ 
 def initDB():
-    conn = psycopg2.connect(os.getenv("DATABASE_URL"))
+    conn = psycopg2.connect(
+        os.getenv("DATABASE_URL"),
+        sslmode="require")
     cursor = conn.cursor()
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS users (
@@ -91,7 +93,9 @@ def signup():
         email = data.get("email")
         password = data.get("password")
 
-        conn = psycopg2.connect(os.getenv("DATABASE_URL"))
+        conn = psycopg2.connect(
+        os.getenv("DATABASE_URL"),
+        sslmode="require")
         cursor = conn.cursor()
         # Check if user exists
         cursor.execute(
@@ -133,7 +137,9 @@ def login():
     email = req.get("email")
     password = req.get("password")
     # Connect to DB
-    conn = psycopg2.connect(os.getenv("DATABASE_URL"))
+    conn = psycopg2.connect(
+        os.getenv("DATABASE_URL"),
+        sslmode="require")
     cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     # Get user
     cursor.execute(
