@@ -9,6 +9,7 @@ import sqlite3
 import os
 import psycopg2
 import cloudinary
+import traceback
 
 load_dotenv()
 
@@ -114,6 +115,7 @@ def signup():
                 "message": "user exists"
             }), 400
     except Exception as e:
+        print(traceback.format_exc())
         return jsonify({
             "status": "error",
             "message": "server error"
