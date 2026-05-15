@@ -27,7 +27,7 @@ CORS(app)
 def initDB():
     conn = psycopg2.connect(
         os.getenv("DATABASE_URL"),
-        sslmode="require"
+        sslmode="require",
         connect_timeout = 10
         )
     cursor = conn.cursor()
