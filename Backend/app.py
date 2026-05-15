@@ -59,22 +59,28 @@ def initDB():
     conn.close()
 
 def fetch_all_posts(cursor, limit, offset):
-    cursor.execute("""SELECT forum_posts.*, users.first_name, users.image_url
+    cursor.execute("""
+                   SELECT forum_posts.id AS post_id, 
+                   forum_posts.title,
+                   forum_posts.content,
+                   forum_posts.created_at,
+                   forum_posts.user_id,
+                   users.first_name, 
+                   users.image_url AS user_image_url
                    FROM forum_posts
-                   JOIN users
-                   ON forum_posts.user_id = users.id
+                   JOIN users ON forum_posts.user_id = users.id
                    ORDER BY forum_posts.created_at DESC
                    LIMIT %s OFFSET %s
                    """, (limit, offset))
     rows = cursor.fetchall()
     print(f"fetchAllposts : {[p for p in rows]}")
     return [{
-        "id": p["id"],
+        "id": p["post_id"],
         "title": p["title"],
         "description" : p["content"],
         "date": p["created_at"],
         "user": p["user_id"],
-        "image_url" : p["image_url"],
+        "image_url" : p["user_image_url"],
         "first_name": p["first_name"]
     } for p in rows]
 
