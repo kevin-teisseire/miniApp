@@ -67,7 +67,7 @@ def fetch_all_posts(cursor, limit, offset):
                    LIMIT %s OFFSET %s
                    """, (limit, offset))
     rows = cursor.fetchall()
-    print(rows)
+    print(f"fetchAllposts : {rows}")
     return [{
         "id": p["id"],
         "title": p["title"],
