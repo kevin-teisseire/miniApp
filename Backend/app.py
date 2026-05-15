@@ -143,8 +143,9 @@ def login():
     # Connect to DB
     conn = psycopg2.connect(
         os.getenv("DATABASE_URL"),
-        sslmode="require")
-
+        sslmode="require",
+        connect_timeout = 10
+        )
     cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     # Get user
     cursor.execute(
@@ -184,7 +185,11 @@ def upload():
     new_surname = request.form.get("new_surname")
     new_email = request.form.get("new_email")
     # Connect to DB
-    conn = psycopg2.connect(os.getenv("DATABASE_URL"))
+    conn = psycopg2.connect(
+        os.getenv("DATABASE_URL"),
+        sslmode="require",
+        connect_timeout = 10
+        )
     # Format DB response 
     cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     img_url = None
@@ -234,7 +239,11 @@ def uploaded_file(filename):
 @app.route("/get-forum", methods=["GET"])
 
 def getMessages():
-    conn = psycopg2.connect(os.getenv("DATABASE_URL"))
+    conn = psycopg2.connect(
+        os.getenv("DATABASE_URL"),
+        sslmode="require",
+        connect_timeout = 10
+        )
     cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     page = request.args.get("page", 1, type=int)
     limit = 4
@@ -257,7 +266,11 @@ def getMessages():
 @app.route("/post", methods=["POST"])
 
 def post():
-    conn = psycopg2.connect(os.getenv("DATABASE_URL"))
+    conn = psycopg2.connect(
+        os.getenv("DATABASE_URL"),
+        sslmode="require",
+        connect_timeout = 10
+        )
     cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     req = request.get_json()
     title = req.get("title")
