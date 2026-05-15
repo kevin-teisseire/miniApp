@@ -253,7 +253,9 @@ def getMessages():
     page = request.args.get("page", 1, type=int)
     limit = 4
     offset = (page - 1) * limit
+    print("Executing fetch_all_posts from getMessages@app.py")
     posts = fetch_all_posts(cursor, limit, offset)
+    print("posts :", posts)
     cursor.execute("SELECT COUNT(*) as total_posts FROM forum_posts")
     result = cursor.fetchone()
     total_posts = result["total_posts"]
