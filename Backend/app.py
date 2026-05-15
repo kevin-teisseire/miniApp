@@ -8,6 +8,7 @@ import time
 import sqlite3
 import os
 import psycopg2
+import psycopg2.extras
 import cloudinary
 import traceback
 
