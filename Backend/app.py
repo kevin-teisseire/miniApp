@@ -4,7 +4,6 @@ from flask import request
 from flask import jsonify
 from flask import send_from_directory
 from dotenv import load_dotenv
-import psycop
 import time
 import sqlite3
 import os
