@@ -250,31 +250,38 @@ def uploaded_file(filename):
 @app.route("/get-forum", methods=["GET"])
 
 def getMessages():
-    conn = psycopg2.connect(
-        os.getenv("DATABASE_URL"),
-        sslmode="require",
-        connect_timeout = 10
-        )
-    cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-    page = request.args.get("page", 1, type=int)
-    limit = 4
-    offset = (page - 1) * limit
-    print("Executing fetch_all_posts from getMessages@app.py")
-    posts = fetch_all_posts(cursor, limit, offset)
-    print("posts :", posts)
-    cursor.execute("SELECT COUNT(*) as total_posts FROM forum_posts")
-    result = cursor.fetchone()
-    total_posts = result["total_posts"]
-    total_pages = total_posts/4
-    conn.close()
-    return jsonify({
-        "status": "success",
-        "message": "post list loaded",
-        "page": page,
-        "total_pages": total_pages,
-        "total_posts": total_posts, 
-        "posts": posts
-    })
+    conn = None
+    try:
+        conn = psycopg2.connect(
+            os.getenv("DATABASE_URL"),
+            sslmode="require",
+            connect_timeout = 10
+            )
+        cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        page = request.args.get("page", 1, type=int)
+        limit = 4
+        offset = (page - 1) * limit
+        print("Executing fetch_all_posts from getMessages@app.py")
+        posts = fetch_all_posts(cursor, limit, offset)
+        print("posts :", posts)
+        cursor.execute("SELECT COUNT(*) as total_posts FROM forum_posts")
+        result = cursor.fetchone()
+        total_posts = result["total_posts"]
+        total_pages = total_posts/4
+        return jsonify({
+            "status": "success",
+            "message": "post list loaded",
+            "page": page,
+            "total_pages": total_pages,
+            "total_posts": total_posts, 
+            "posts": posts
+        })
+    except Exception:
+        print(traceback.format_exc())
+        return jsonify({"status": "error"}), 500
+    finally:
+        if conn:
+            conn.close()
 
 @app.route("/post", methods=["POST"])
 
