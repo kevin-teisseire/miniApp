@@ -10,6 +10,7 @@ import os
 import psycopg2
 import psycopg2.extras
 import cloudinary
+import cloudinary.uploader
 import traceback
 
 load_dotenv()
