@@ -80,12 +80,9 @@ export async function loadAndRenderForum(page=1){
 
 // Display existing posts
 async function renderPosts(){
-    const user = JSON.parse(localStorage.getItem("user"))
-    const res = await post(newPostTitle.value, newPostDescription.value, user["userId"])
+    const res = await post(newPostTitle.value, newPostDescription.value, STATE.currentUser["userId"])
     return res
 }
-
-
 
 // Send a new post button
 createNewPostBtn.addEventListener("click", () => {
@@ -110,15 +107,14 @@ forumNextBtn.addEventListener("click", async() => {
     if (STATE.forumPage < STATE.maxPage){
             STATE.forumPage++;
     }
-
     await loadAndRenderForum(STATE.forumPage);
 })
 
 forumPrevBtn.addEventListener("click", async() => {
     if (STATE.forumPage > 1){
         STATE.forumPage--;
-        await loadAndRenderForum(STATE.forumPage);
     }
+    await loadAndRenderForum(STATE.forumPage);
     
 })
 
