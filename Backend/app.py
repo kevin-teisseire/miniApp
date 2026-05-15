@@ -9,8 +9,14 @@ import time
 import sqlite3
 import os
 import psycopg2
+import cloudinary
 
 load_dotenv()
+
+cloudinary.config(
+    cloud_name = os.getenv("CLOUD_NAME"),
+    api_key = os.getenv("API_KEY")
+)
 
 app = Flask(__name__)
 CORS(app)
@@ -85,7 +91,7 @@ def signup():
         email = data.get("email")
         password = data.get("password")
 
-        conn = psycopg2.connect("database.db")
+        conn = psycopg2.connect(os.getenv("DATABASE_URL"))
         cursor = conn.cursor()
         # Check if user exists
         cursor.execute(
@@ -126,7 +132,7 @@ def login():
     email = req.get("email")
     password = req.get("password")
     # Connect to DB
-    conn = psycopg2.connect("database.db")
+    conn = psycopg2.connect(os.getenv("DATABASE_URL"))
     cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     # Get user
     cursor.execute(
@@ -156,61 +162,50 @@ def login():
 @app.route("/upload", methods=["POST"])
 
 def upload():
-    # Create upload folder in project directory
-    base_folder = os.path.dirname(__file__)
-    upload_folder = os.path.join(base_folder, "uploads")
-    os.makedirs(upload_folder, exist_ok=True)
-    # Image path and save
+    # Get new image
     new_image = request.files.get("image")
-    # Get current email to idetify user in DB
-    email = request.form.get("email")
+    # Get user id
+    user_id = request.form.get("user_id")
     # Other infos
     new_description = request.form.get("new_description")
     new_name = request.form.get("new_name")
     new_surname = request.form.get("new_surname")
     new_email = request.form.get("new_email")
     # Connect to DB
-    conn = psycopg2.connect("database.db")
+    conn = psycopg2.connect(os.getenv("DATABASE_URL"))
     # Format DB response 
     cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-    # Get user ID
-    cursor.execute("SELECT * FROM users WHERE email = %s", (email,))
-    user = cursor.fetchone()
-    user_id = user["id"]
+    img_url = None
     # Check for new data
     if new_image:
-        # Secure file name
-        ext = os.path.splitext(new_image.filename)[1]
-        filename = f"user_{user_id}_{int(time.time())}{ext}"
-        # Create path
-        filepath = os.path.join(upload_folder, filename)
-        # Save image
-        new_image.save(filepath)
-        img_url = filename
-        cursor.execute("UPDATE users SET image_url = %s WHERE email = %s", (img_url, email))
+        # Upload image
+        result = cloudinary.uploader.upload(new_image)
+        img_url = result["secure_url"]
+        cursor.execute("UPDATE users SET image_url = %s WHERE id = %s", (img_url, user_id))
     if new_description:
-        cursor.execute("UPDATE users SET description = %s WHERE email = %s", (new_description, email))
+        cursor.execute("UPDATE users SET description = %s WHERE id = %s", (new_description, user_id))
     if new_name:
-        cursor.execute("UPDATE users SET first_name = %s WHERE email = %s", (new_name, email))
+        cursor.execute("UPDATE users SET first_name = %s WHERE id = %s", (new_name, user_id))
     if new_surname:
-        cursor.execute("UPDATE users SET last_name = %s WHERE email = %s", (new_surname, email))
+        cursor.execute("UPDATE users SET last_name = %s WHERE id = %s", (new_surname, user_id))
     if new_email:
-        cursor.execute("UPDATE users SET email = %s WHERE email = %s", (new_email, email))
+        cursor.execute("UPDATE users SET email = %s WHERE id = %s", (new_email, user_id))
         email = new_email
     conn.commit()
     # Get user data after modification
-    cursor.execute("SELECT * FROM users WHERE email = %s", (email,))
+    cursor.execute("SELECT * FROM users WHERE id = %s", (user_id,))
     updatedUser = cursor.fetchone()
     conn.close()
     # Format response
     return jsonify({
         "status": "success",
         "message": "infos uploaded",
+        "user_id": updatedUser["id"],
         "first_name": updatedUser["first_name"],
         "last_name": updatedUser["last_name"],
         "email": updatedUser["email"],
         "description": updatedUser["description"],
-        "image_url": f"http://localhost:8000/uploads/{updatedUser["image_url"]}"
+        "image_url": img_url
     }), 200
 
 # ------ Path to images ------
@@ -227,7 +222,7 @@ def uploaded_file(filename):
 @app.route("/get-forum", methods=["GET"])
 
 def getMessages():
-    conn = psycopg2.connect("database.db")
+    conn = psycopg2.connect(os.getenv("DATABASE_URL"))
     cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     page = request.args.get("page", 1, type=int)
     limit = 4
@@ -250,7 +245,7 @@ def getMessages():
 @app.route("/post", methods=["POST"])
 
 def post():
-    conn = psycopg2.connect("database.db")
+    conn = psycopg2.connect(os.getenv("DATABASE_URL"))
     cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     req = request.get_json()
     title = req.get("title")

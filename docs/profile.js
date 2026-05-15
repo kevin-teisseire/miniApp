@@ -54,7 +54,7 @@ imgUploader.addEventListener("change", () => {
 // Submit modifications button
 function createFormData(){
     const formData = new FormData()
-    formData.append("email", STATE.currentUser["email"])
+    formData.append("user_id", STATE.currentUser["userId"])
     if (selectedFile){
         formData.append("image", selectedFile)
     }
