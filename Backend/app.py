@@ -23,35 +23,34 @@ def initDB():
     cursor = conn.cursor()
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS users (
-            id SERIAL PRIMARY KEY AUTOINCREMENT,
+            id SERIAL PRIMARY KEY,
                    first_name TEXT,
                    last_name TEXT,
-                   email TEXT,
+                   email TEXT UNIQUE,
                    password TEXT,
-                   profile_image TEXT,
+                   image_url TEXT,
                    description TEXT
             )
         """) 
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS forum_posts (
-                   id SERIAL PRIMARY KEY AUTOINCREMENT,
-                   user_id INTEGER,
+                   id SERIAL PRIMARY KEY,
                    title TEXT,
                    content TEXT,
-                   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                   FOREIGN KEY (user_id) REFERENCES users(id)
+                   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                   user_id INTEGER REFERENCES users(id),
         )
     """)
     conn.commit()
     conn.close()
 
 def fetch_all_posts(cursor, limit, offset):
-    cursor.execute("""SELECT forum_posts.*, users.first_name, users.profil_image
+    cursor.execute("""SELECT forum_posts.*, users.first_name, users.image_url
                    FROM forum_posts
                    JOIN users
                    ON forum_posts.user_id = users.id
                    ORDER BY forum_posts.created_at DESC
-                   LIMIT ? OFFSET ?
+                   LIMIT %s OFFSET %s
                    """, (limit, offset))
     rows = cursor.fetchall()
     return [{
@@ -60,7 +59,7 @@ def fetch_all_posts(cursor, limit, offset):
         "description" : p["content"],
         "date": p["created_at"],
         "user": p["user_id"],
-        "image_url" : f"http://localhost:8000/uploads/{p["profil_image"]}",
+        "image_url" : f"http://localhost:8000/uploads/{p["image_url"]}",
         "first_name": p["first_name"]
     } for p in rows]
 
@@ -90,12 +89,12 @@ def signup():
         cursor = conn.cursor()
         # Check if user exists
         cursor.execute(
-            "SELECT 1 FROM users WHERE email = ?", (email,)
+            "SELECT 1 FROM users WHERE email = %s", (email,)
         )
         existingUser = cursor.fetchone()
         if not existingUser:
             cursor.execute(
-                "INSERT INTO users (first_name, last_name, email, password) VALUES (?, ?, ?, ?)", (firstname, lastname, email, password)
+                "INSERT INTO users (first_name, last_name, email, password) VALUES (%s, %s, %s, %s)", (firstname, lastname, email, password)
             )
             user_id = cursor.lastrowid
             conn.commit()
@@ -131,7 +130,7 @@ def login():
     cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     # Get user
     cursor.execute(
-        "SELECT * FROM users WHERE email = ? AND password = ?", (email, password)
+        "SELECT * FROM users WHERE email = %s AND password = %s", (email, password)
     )
     user = cursor.fetchone()
     conn.close()
@@ -145,7 +144,7 @@ def login():
             "last_name": user["last_name"],
             "description": user["description"],
             "user_id": user["id"],
-            "img_url": f"http://localhost:8000/uploads/{user["profil_image"]}"
+            "img_url": f"http://localhost:8000/uploads/{user["image_url"]}"
         }), 200
     else:
         return jsonify({
@@ -175,7 +174,7 @@ def upload():
     # Format DB response 
     cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     # Get user ID
-    cursor.execute("SELECT * FROM users WHERE email = ?", (email,))
+    cursor.execute("SELECT * FROM users WHERE email = %s", (email,))
     user = cursor.fetchone()
     user_id = user["id"]
     # Check for new data
@@ -188,19 +187,19 @@ def upload():
         # Save image
         new_image.save(filepath)
         img_url = filename
-        cursor.execute("UPDATE users SET profil_image = ? WHERE email = ?", (img_url, email))
+        cursor.execute("UPDATE users SET image_url = %s WHERE email = %s", (img_url, email))
     if new_description:
-        cursor.execute("UPDATE users SET description = ? WHERE email = ?", (new_description, email))
+        cursor.execute("UPDATE users SET description = %s WHERE email = %s", (new_description, email))
     if new_name:
-        cursor.execute("UPDATE users SET first_name = ? WHERE email = ?", (new_name, email))
+        cursor.execute("UPDATE users SET first_name = %s WHERE email = %s", (new_name, email))
     if new_surname:
-        cursor.execute("UPDATE users SET last_name = ? WHERE email = ?", (new_surname, email))
+        cursor.execute("UPDATE users SET last_name = %s WHERE email = %s", (new_surname, email))
     if new_email:
-        cursor.execute("UPDATE users SET email = ? WHERE email = ?", (new_email, email))
+        cursor.execute("UPDATE users SET email = %s WHERE email = %s", (new_email, email))
         email = new_email
     conn.commit()
     # Get user data after modification
-    cursor.execute("SELECT * FROM users WHERE email = ?", (email,))
+    cursor.execute("SELECT * FROM users WHERE email = %s", (email,))
     updatedUser = cursor.fetchone()
     conn.close()
     # Format response
@@ -211,7 +210,7 @@ def upload():
         "last_name": updatedUser["last_name"],
         "email": updatedUser["email"],
         "description": updatedUser["description"],
-        "image_url": f"http://localhost:8000/uploads/{updatedUser["profil_image"]}"
+        "image_url": f"http://localhost:8000/uploads/{updatedUser["image_url"]}"
     }), 200
 
 # ------ Path to images ------
@@ -257,7 +256,7 @@ def post():
     title = req.get("title")
     description = req.get("description")
     user_id = req.get("userId")
-    cursor.execute("INSERT INTO forum_posts (title, content, user_id) VALUES (?, ?, ?)", (title, description, user_id))
+    cursor.execute("INSERT INTO forum_posts (title, content, user_id) VALUES (%s, %s, %s)", (title, description, user_id))
     conn.commit()
     new_post_id = cursor.lastrowid
     conn.close()
