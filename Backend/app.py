@@ -297,11 +297,10 @@ def post():
     description = req.get("description")
     user_id = req.get("user_id")
     cursor.execute("INSERT INTO forum_posts (title, content, user_id) VALUES (%s, %s, %s)", (title, description, user_id))
+    new_post = cursor.fetchone()
     conn.commit()
-    new_post_id = cursor.lastrowid
-    print('app.py : new_post_id = ', new_post_id)
     conn.close()
-    if new_post_id:
+    if new_post:
         return jsonify ({
             "status": "success",
             "message": "post created",
