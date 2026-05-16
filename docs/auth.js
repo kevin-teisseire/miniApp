@@ -31,7 +31,7 @@ let isLoading = false;
 
 async function logUserIn(){
     if (isLoading) return;
-    isloading = true;
+    isLoading = true;
     try{
         const email = document.getElementById('login-email-ipt').value;
         const passWord = document.getElementById('login-pw-ipt').value;
