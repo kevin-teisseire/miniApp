@@ -299,6 +299,7 @@ def post():
     cursor.execute("INSERT INTO forum_posts (title, content, user_id) VALUES (%s, %s, %s)", (title, description, user_id))
     conn.commit()
     new_post_id = cursor.lastrowid
+    print('app.py : new_post_id = ', new_post_id)
     conn.close()
     if new_post_id:
         return jsonify ({
