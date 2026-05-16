@@ -44,7 +44,7 @@ async function logUserIn(){
         }
         const res = await login(email, passWord);
         // User found in DB
-        if (res.data.status === "success"){ 
+        if (res.status === "success"){ 
             setCurrentUser(res.user);
             displayInfos(STATE.currentUser);
             // Load forum messages
