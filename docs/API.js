@@ -106,7 +106,7 @@ export async function post(title, description, user_id){
         body: JSON.stringify({
             title: title, 
             description: description,
-            user_id: user_d 
+            user_id: user_id 
         })
     })
     const data = await res.json()
