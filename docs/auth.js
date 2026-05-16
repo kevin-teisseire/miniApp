@@ -30,7 +30,7 @@ export function setCurrentUser(user){
 let isLoading = false;
 
 async function logUserIn(){
-    if (isloading) return;
+    if (isLoading) return;
     isloading = true;
     try{
         const email = document.getElementById('login-email-ipt').value;
@@ -56,7 +56,7 @@ async function logUserIn(){
             show(error_wrongCred);
         }
     } finally {
-        isloading = false;
+        isLoading = false;
     }
 }
 
