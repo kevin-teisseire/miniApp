@@ -46,9 +46,9 @@ async function logUserIn(){
             toggleSections([authPop], [main, profileSection, profileInfos, navBar])
             pageWrapper.style.justifyContent = ''
             showMenu(profileMenu)
+            console.log(`auth-logUserIn: state = ${STATE}`)
         // User not found in DB
         } else {
-            console.log('else')
             show(error_wrongCred)
         }
     };

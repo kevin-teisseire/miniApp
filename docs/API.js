@@ -26,7 +26,7 @@ export async function login(email, passWord){
             email: data.email,
             description: data.description,
             imgUrl: data.img_url,
-            userId: data.user_id
+            user_id: data.user_id
         } 
     }
     return {
@@ -57,7 +57,7 @@ export async function signUp(firstName, lastName, email, passWord){
             firstName: firstName,
             lastName: lastName,
             email: email,
-            userId: data.user_id
+            user_id: data.user_id
         }
         return {
             data,
@@ -97,7 +97,7 @@ export async function loadForum(page){
 
 /* ------ Forum ------ */
 
-export async function post(title, description, userId){
+export async function post(title, description, user_id){
     const res = await fetch("https://miniapp-cc0r.onrender.com/post", {
         method: "POST",
         headers: {
@@ -106,7 +106,7 @@ export async function post(title, description, userId){
         body: JSON.stringify({
             title: title, 
             description: description,
-            userId: userId 
+            user_id: user_d 
         })
     })
     const data = await res.json()

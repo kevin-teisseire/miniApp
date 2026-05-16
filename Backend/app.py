@@ -295,7 +295,7 @@ def post():
     req = request.get_json()
     title = req.get("title")
     description = req.get("description")
-    user_id = req.get("userId")
+    user_id = req.get("user_id")
     cursor.execute("INSERT INTO forum_posts (title, content, user_id) VALUES (%s, %s, %s)", (title, description, user_id))
     conn.commit()
     new_post_id = cursor.lastrowid
