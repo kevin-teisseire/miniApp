@@ -82,6 +82,7 @@ export async function loadAndRenderForum(page=1){
 async function renderPosts(){
     const res = await post(newPostTitle.value, newPostDescription.value, STATE.currentUser["user_id"])
     return res
+    console.log(`renderPosts(): ${res}`)
 }
 
 // Send a new post button
