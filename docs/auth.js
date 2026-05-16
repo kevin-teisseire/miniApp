@@ -27,8 +27,9 @@ export function setCurrentUser(user){
     localStorage.setItem("user", JSON.stringify(user));
 }
 
+let isLoading = false;
+
 async function logUserIn(){
-    let isLoading = false;
     if (isloading) return;
     isloading = true;
     try{
