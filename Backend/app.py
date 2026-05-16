@@ -296,20 +296,20 @@ def post():
     title = req.get("title")
     description = req.get("description")
     user_id = req.get("user_id")
-    cursor.execute("INSERT INTO forum_posts (title, content, user_id) VALUES (%s, %s, %s)", (title, description, user_id))
-    new_post = cursor.fetchone()
+
+    cursor.execute("""
+                   INSERT INTO forum_posts (title, content, user_id)
+                   VALUES (%s, %s, %s)
+    """, (title, description, user_id))
+    
     conn.commit()
     conn.close()
-    print('app.py:new_post :', new_post)
-    if new_post:
-        return jsonify ({
-            "status": "success",
-            "message": "post created",
-        })
-    return jsonify({
-        "status": "error",
-        "message": "post not created",
+
+    return jsonify ({
+        "status": "success",
+        "message": "post created",
     })
+
 
 # ======  MAIN ======
 if __name__ == "__main__":
