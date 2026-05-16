@@ -3,7 +3,9 @@
 =========================== */
 
 export const STATE = {
+    currentUser: null,
     forumPage: 1,
-    maxPage: 1,
-    currentUser: null
+    forumTotalPages: 1,
+    forumPosts: null,
+    forumPostCount: 0
 }

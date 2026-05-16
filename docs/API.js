@@ -86,12 +86,11 @@ export async function uploadForm(formData){
     return user
 }
 
-export async function loadForum(page){
-    const res = await fetch(`https://miniapp-cc0r.onrender.com/get-forum?page=${page}`, {
+export async function loadForum(){
+    const res = await fetch("https://miniapp-cc0r.onrender.com/get-forum", {
         method: "GET"
     })
     const data = await res.json()
-    console.log("API.JS :", data)
     return data
 }
 

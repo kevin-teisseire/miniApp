@@ -1,8 +1,8 @@
 import { loginWrapper, signupWrapper, main, profileSection, profileInfos, navBar, pageWrapper, error_wrongCred,
         error_userExists, profileMenu, signupBtn, loginBtn, signupTxt, loginTxt, authPop } from "./dom.js";
 import { show, hide, toggleSections, cleanInputs } from "./UI.js";
-import { login, signUp } from "./API.js";
-import { loadAndRenderForum } from "./forum.js";
+import { loadForum, login, signUp } from "./API.js";
+import { renderForum, setForumParam } from "./forum.js";
 import { STATE } from "./state.js";
 import { displayInfos } from "./profile.js";
 import { showMenu, hideMenu } from "./navigation.js";
@@ -27,6 +27,8 @@ export function setCurrentUser(user){
     localStorage.setItem("user", JSON.stringify(user));
 }
 
+
+
 let isLoading = false;
 
 async function logUserIn(){
@@ -46,7 +48,9 @@ async function logUserIn(){
             setCurrentUser(res.user);
             displayInfos(STATE.currentUser);
             // Load forum messages
-            await loadAndRenderForum(STATE.forumPage);
+            const res = await loadForum();
+            setForumParam(res)
+            renderForum()
             toggleSections([authPop], [main, profileSection, profileInfos, navBar]);
             pageWrapper.style.justifyContent = '';
             showMenu(profileMenu);

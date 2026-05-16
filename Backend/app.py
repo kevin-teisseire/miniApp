@@ -58,7 +58,7 @@ def initDB():
     conn.commit()
     conn.close()
 
-def fetch_all_posts(cursor, limit, offset):
+def fetch_all_posts(cursor):
     cursor.execute("""
                    SELECT forum_posts.id AS post_id, 
                    forum_posts.title,
@@ -70,8 +70,7 @@ def fetch_all_posts(cursor, limit, offset):
                    FROM forum_posts
                    JOIN users ON forum_posts.user_id = users.id
                    ORDER BY forum_posts.created_at DESC
-                   LIMIT %s OFFSET %s
-                   """, (limit, offset))
+                   """)
     rows = cursor.fetchall()
     print(f"fetchAllposts : {[p for p in rows]}")
     return [{
@@ -258,11 +257,10 @@ def getMessages():
             connect_timeout = 10
             )
         cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-        page = request.args.get("page", 1, type=int)
-        limit = 4
-        offset = (page - 1) * limit
-        print("Executing fetch_all_posts from getMessages@app.py")
-        posts = fetch_all_posts(cursor, limit, offset)
+        # page = request.args.get("page", 1, type=int)
+        # limit = 4
+        # offset = (page - 1) * limit
+        posts = fetch_all_posts(cursor)
         print("posts :", posts)
         cursor.execute("SELECT COUNT(*) as total_posts FROM forum_posts")
         result = cursor.fetchone()
@@ -271,7 +269,6 @@ def getMessages():
         return jsonify({
             "status": "success",
             "message": "post list loaded",
-            "page": page,
             "total_pages": total_pages,
             "total_posts": total_posts, 
             "posts": posts
@@ -301,7 +298,7 @@ def post():
                    INSERT INTO forum_posts (title, content, user_id)
                    VALUES (%s, %s, %s)
     """, (title, description, user_id))
-    
+
     conn.commit()
     conn.close()
 

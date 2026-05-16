@@ -62,26 +62,36 @@ function createForumPostsHtml(element){
     postBodyRight.appendChild(postDescription)
 }
 
-// Render forum after data fetch
-export async function loadAndRenderForum(page=1){
+// Render forum 
+export function setForumParam(res){
+    Object.assign(STATE, {
+        forumTotalPages: res.total_pages,
+        forumPosts: res.posts,
+        forumPostCount: Math.ceil(res.total_posts)
+    })
+}
+
+export function renderForum(){
+    // Reset html
     forumBody.innerHTML = ''
-    const data = await loadForum(page)
-    STATE.maxPage = Math.ceil(data.total_pages)
-    if (data.posts){
-        data.posts.forEach(el => {
+    // Divide post display 4x4
+    const start = (STATE.forumPage - 1) * 4;
+    const end = STATE.forumPage * 4;
+    // Generate visible posts
+    if (STATE.forumPosts){
+        STATE.forumPosts.slice(start, end).forEach(el => {
             createForumPostsHtml(el)
         })
-        postNavPages.textContent = `${STATE.forumPage} / ${STATE.maxPage}`
+        postNavPages.textContent = `${STATE.forumPage} / ${STATE.forumTotalPages}`
     } else {
         postStatusMessage.textContent = 'No post in this forum yet'
     }
 }
 
-
-// Display existing posts
-async function renderPosts(){
+// Save new post
+async function sendPost(){
     const res = await post(newPostTitle.value, newPostDescription.value, STATE.currentUser["user_id"])
-    console.log(`renderPosts(): ${res.status}`)
+    console.log(`sendPost(): ${res.status}`)
     return res
 }
 
@@ -91,9 +101,9 @@ createNewPostBtn.addEventListener("click", () => {
 })
 
 sendNewPostBtn.addEventListener("click", async() => {
-    const newPost = await renderPosts()
-    await loadAndRenderForum(STATE.forumPage)
-    console.log(newPost.status)
+    const newPost = await sendPost()
+    setForumParam(newPost)
+    renderForum()
     displayPostStatusMessage(newPost.status)
     toggleSections([newPostPopup], [postStatusMessage])
     cleanInputs([newPostDescription, newPostTitle])
@@ -109,14 +119,14 @@ forumNextBtn.addEventListener("click", async() => {
     if (STATE.forumPage < STATE.maxPage){
             STATE.forumPage++;
     }
-    await loadAndRenderForum(STATE.forumPage);
+    renderForum();
 })
 
 forumPrevBtn.addEventListener("click", async() => {
     if (STATE.forumPage > 1){
         STATE.forumPage--;
     }
-    await loadAndRenderForum(STATE.forumPage);
+    renderForum();
     
 })
 
