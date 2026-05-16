@@ -81,7 +81,7 @@ export async function loadAndRenderForum(page=1){
 // Display existing posts
 async function renderPosts(){
     const res = await post(newPostTitle.value, newPostDescription.value, STATE.currentUser["user_id"])
-    console.log(`renderPosts(): ${res}`)
+    console.log(`renderPosts(): ${res.status}`)
     return res
 }
 
