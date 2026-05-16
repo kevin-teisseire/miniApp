@@ -92,6 +92,7 @@ createNewPostBtn.addEventListener("click", () => {
 sendNewPostBtn.addEventListener("click", async() => {
     const newPost = await renderPosts()
     await loadAndRenderForum(STATE.forumPage)
+    console.log(newPost.status)
     displayPostStatusMessage(newPost.status)
     toggleSections([newPostPopup], [postStatusMessage])
     cleanInputs([newPostDescription, newPostTitle])
@@ -129,5 +130,5 @@ async function displayPostStatusMessage(status){
     }
     setTimeout(() =>{
             postStatusMessage.textContent = ''
-        }, 3000)
+        }, 2000)
 }

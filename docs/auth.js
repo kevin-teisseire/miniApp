@@ -79,7 +79,6 @@ async function signUserUp(){
         if (res.data.status === "success"){
             setCurrentUser(res.user);
             toggleSections([signupWrapper], [loginWrapper]);
-            await loadAndRenderForum(STATE.forumPage);
         } else if (res.data.status === "error" && res.data.message === "user exists"){
            show(error_userExists);
         }
