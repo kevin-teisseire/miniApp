@@ -300,6 +300,7 @@ def post():
     new_post = cursor.fetchone()
     conn.commit()
     conn.close()
+    print('app.py:new_post :', new_post)
     if new_post:
         return jsonify ({
             "status": "success",
