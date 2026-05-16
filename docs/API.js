@@ -108,10 +108,10 @@ export async function post(title, description, user_id){
             description: description,
             user_id: user_id 
         })
-    })
-    const data = await res.json()
+    });
+    const data = await res.json();
     console.log(`post(): ${data}`)
-    return data
+    return data;
 }
 
 
