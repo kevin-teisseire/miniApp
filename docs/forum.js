@@ -82,7 +82,7 @@ export function renderForum(){
         STATE.forumPosts.slice(start, end).forEach(el => {
             createForumPostsHtml(el)
         })
-        postNavPages.textContent = `${STATE.forumPage} / ${STATE.forumTotalPages}`
+        postNavPages.textContent = `${STATE.forumPage} / ${Math.ceil(STATE.forumTotalPages)}`
     } else {
         postStatusMessage.textContent = 'No post in this forum yet'
     }
