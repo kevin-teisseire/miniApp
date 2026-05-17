@@ -32,9 +32,8 @@ export function setCurrentUser(data){
         userId: data.user_id
     };
     STATE.currentUser = user
-    localStorage.setItem("user", JSON.stringify(STATE.user));
+    localStorage.setItem("user", JSON.stringify(user));
 }
-
 
 
 let isLoading = false;
