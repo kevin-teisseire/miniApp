@@ -173,7 +173,7 @@ def login():
             "last_name": user["last_name"],
             "description": user["description"],
             "user_id": user["id"],
-            "img_url": user["image_url"]
+            "image_url": user["image_url"]
         }), 200
     else:
         return jsonify({
@@ -202,13 +202,13 @@ def upload():
         )
     # Format DB response 
     cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-    img_url = None
+    image_url = None
     # Check for new data
     if new_image:
         # Upload image
         result = cloudinary.uploader.upload(new_image)
-        img_url = result["secure_url"]
-        cursor.execute("UPDATE users SET image_url = %s WHERE id = %s", (img_url, user_id))
+        image_url = result["secure_url"]
+        cursor.execute("UPDATE users SET image_url = %s WHERE id = %s", (image_url, user_id))
     if new_description:
         cursor.execute("UPDATE users SET description = %s WHERE id = %s", (new_description, user_id))
     if new_name:
@@ -232,7 +232,7 @@ def upload():
         "last_name": updatedUser["last_name"],
         "email": updatedUser["email"],
         "description": updatedUser["description"],
-        "img_url": img_url
+        "image_url": image_url
     }), 200
 
 # ------ Path to images ------
