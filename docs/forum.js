@@ -82,14 +82,8 @@ export function renderForum(path = null) {
     const end = STATE.forumPage * 4;
     // Generate visible posts
     if (STATE.forumPosts) {
-        // Default image url
-        const defaultImageUrl = 'https://res.cloudinary.com/dndeflndh/image/upload/v1779044690/Capture_d_e%CC%81cran_2026-05-17_a%CC%80_21.04.43_rmc8mm.png'
         // For each post on current page
         STATE.forumPosts.slice(start, end).forEach(el => {
-            // Set default if image = null
-            if (el.image_url === null){
-                el.image_url === defaultImageUrl
-            }
             // Create posts HTML
             createForumPostsHtml(el)
         })
