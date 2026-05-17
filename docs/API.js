@@ -91,6 +91,7 @@ export async function loadForum(){
         method: "GET"
     })
     const data = await res.json()
+    console.log(`loadForum : data = ${data}`)
     return data
 }
 
