@@ -79,6 +79,8 @@ export function renderForum(path=null){
     const start = (STATE.forumPage - 1) * 4;
     const end = STATE.forumPage * 4;
     // Generate visible posts
+    console.log(STATE.forumPosts)
+    console.log(Array.isArray(STATE.forumPosts))
     if (STATE.forumPosts){
         STATE.forumPosts.slice(start, end).forEach(el => {
             createForumPostsHtml(el)
