@@ -23,7 +23,7 @@ loginTxt.addEventListener('click', () => {
 
 // Login 
 export function setCurrentUser(data){
-    STATE.currentUser = {
+    const user = {
         firstName: data.first_name,
         lastName: data.last_name,
         email: data.email,
@@ -31,7 +31,8 @@ export function setCurrentUser(data){
         imgUrl: data.img_url,
         userId: data.user_id
     };
-    localStorage.setItem("user", JSON.stringify(user));
+    STATE.currentUser = user
+    localStorage.setItem("user", JSON.stringify(STATE.user));
 }
 
 
