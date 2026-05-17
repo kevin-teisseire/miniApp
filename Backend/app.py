@@ -168,14 +168,12 @@ def login():
         return jsonify({
             "status": "success",
             "message": "logged in",
-            "user":{
-                "email": user["email"],
-                "first_name": user["first_name"],
-                "last_name": user["last_name"],
-                "description": user["description"],
-                "user_id": user["id"],
-                "img_url": user["image_url"]
-            }
+            "email": user["email"],
+            "first_name": user["first_name"],
+            "last_name": user["last_name"],
+            "description": user["description"],
+            "user_id": user["id"],
+            "img_url": user["image_url"]
         }), 200
     else:
         return jsonify({

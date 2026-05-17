@@ -27,7 +27,7 @@ export async function login(email, passWord){
             description: data.description,
             imgUrl: data.img_url,
             user_id: data.user_id
-        } 
+        }
     }
     return {
             data, 
