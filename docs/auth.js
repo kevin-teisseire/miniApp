@@ -45,7 +45,7 @@ async function logUserIn(){
         const email = document.getElementById('login-email-ipt').value;
         const password = document.getElementById('login-pw-ipt').value;
         // Check infos missing
-        if (!email || !passWord){
+        if (!email || !password){
             alert("Some fields are missing");
             return;
         }
