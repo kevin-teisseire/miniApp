@@ -1,8 +1,8 @@
 /* ========================
             API
 =========================== */
-/* ------ Log in ------ */
 
+/* ------ Log in ------ */
 
 export async function login(email, password){
     const res = await fetch("https://miniapp-cc0r.onrender.com/login", {
@@ -14,9 +14,9 @@ export async function login(email, password){
             email: email,
             password: password
         })
-    })
+    });
     const data = await res.json();
-    return data
+    return data;
 };
 
 /* ------ Sign up ------ */
@@ -33,21 +33,21 @@ export async function signUp(first_name, last_name, email, password){
             email: email,
             password: password
         })
-    })
-    const data = await res.json()
-    let user = null
+    });
+    const data = await res.json();
+    let user = null;
     if (data.status === "success"){
         user = {
             first_name: first_name,
             last_name: last_name,
             email: email,
             user_id: data.user_id
-        }
+        };
         return {
             data,
             user
-        }
-    }
+        };
+    };
 };
 
 
@@ -58,19 +58,18 @@ export async function uploadForm(formData){
     const res = await fetch("https://miniapp-cc0r.onrender.com/upload", {
         method: "POST",
         body: formData
-    })
-    const data = await res.json()
-    return data
-}
+    });
+    const data = await res.json();
+    return data;
+};
 
 export async function loadForum(){
     const res = await fetch("https://miniapp-cc0r.onrender.com/get-forum", {
         method: "GET"
     })
-    const data = await res.json()
-    console.log(`loadForum : data = ${data}`)
-    return data
-}
+    const data = await res.json();
+    return data;
+};
 
 /* ------ Forum ------ */
 
@@ -87,9 +86,8 @@ export async function post(title, description, user_id){
         })
     });
     const data = await res.json();
-    console.log('post():', data)
     return data;
-}
+};
 
 
 

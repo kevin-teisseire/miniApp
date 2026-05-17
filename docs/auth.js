@@ -14,12 +14,12 @@ import { showMenu, hideMenu } from "./navigation.js";
 // Login text link to signup
 signupTxt.addEventListener('click', () => {
     toggleSections([loginWrapper], [signupWrapper]);
-})
+});
 
 // Signup text to login
 loginTxt.addEventListener('click', () => {
     toggleSections([signupWrapper], [loginWrapper]);
-})
+});
 
 // Login 
 export function setCurrentUser(data){
@@ -33,7 +33,7 @@ export function setCurrentUser(data){
     };
     STATE.currentUser = user
     localStorage.setItem("user", JSON.stringify(user));
-}
+};
 
 
 let isLoading = false;
@@ -48,31 +48,27 @@ async function logUserIn(){
         if (!email || !password){
             alert("Some fields are missing");
             return;
-        }
+        };
         const loginRes = await login(email, password);
         // User found in DB
-        console.log('loginRes: ',loginRes)
         if (loginRes.status === "success"){ 
-            console.log('success')
             setCurrentUser(loginRes);
             displayInfos(STATE.currentUser);
             // Load forum messages
             const forumRes = await loadForum();
-            console.log(`forumRes: ${forumRes}`)
-            setForumParam(forumRes)
-            renderForum()
+            setForumParam(forumRes);
+            renderForum();
             toggleSections([authPop], [main, profileSection, profileInfos, navBar]);
             pageWrapper.style.justifyContent = '';
             showMenu(profileMenu);
-            console.log(`auth-logUserIn: state = ${STATE.currentUser}`);
         // User not found in DB
         } else {
             show(error_wrongCred);
-        }
+        };
     } finally {
         isLoading = false;
-    }
-}
+    };
+};
 
 loginBtn.addEventListener("click", () => {
     logUserIn();
@@ -87,7 +83,7 @@ async function signUserUp(){
     const password = document.getElementById('signup-pw-ipt').value;
     // Check field values
     if (!first_name || !last_name || !email || !password){
-        alert("Some fields are missing")
+        alert("Some fields are missing");
     } else {
         const res = await signUp(first_name, last_name, email, password);
         if (res.data.status === "success"){
@@ -95,9 +91,9 @@ async function signUserUp(){
             toggleSections([signupWrapper], [loginWrapper]);
         } else if (res.data.status === "error" && res.data.message === "user exists"){
            show(error_userExists);
-        }
-    }
-}
+        };
+    };
+};
 
 signupBtn.addEventListener("click", () => {
     signUserUp();
