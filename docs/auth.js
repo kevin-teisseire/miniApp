@@ -46,15 +46,14 @@ async function logUserIn(){
         const loginRes = await login(email, passWord);
         // User found in DB
         console.log('loginRes: ',loginRes)
-        console.log('loginRes.data: ',loginRes.data)
-        if (loginRes.data.status === "success"){ 
+        if (loginRes.status === "success"){ 
             console.log('success')
-            setCurrentUser(loginRes.user);
+            setCurrentUser(loginRes);
             displayInfos(STATE.currentUser);
             // Load forum messages
             const forumRes = await loadForum();
-            console.log(`forumRes: ${forumRes.data}`)
-            setForumParam(forumRes.data)
+            console.log(`forumRes: ${forumRes}`)
+            setForumParam(forumRes)
             renderForum()
             toggleSections([authPop], [main, profileSection, profileInfos, navBar]);
             pageWrapper.style.justifyContent = '';

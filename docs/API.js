@@ -16,23 +16,7 @@ export async function login(email, passWord){
         })
     })
     const data = await res.json();
-    console.log(data)
-    let user = null
-    if (data.status === "success"){
-        // save data 
-        user = {
-            firstName: data.first_name,
-            lastName: data.last_name,
-            email: data.email,
-            description: data.description,
-            imgUrl: data.img_url,
-            user_id: data.user_id
-        }
-    }
-    return {
-            data, 
-            user
-    }
+    return data
 };
 
 /* ------ Sign up ------ */
