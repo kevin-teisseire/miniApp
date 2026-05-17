@@ -18,7 +18,6 @@ export function displayInfos(userObj){
     profileEmail.textContent = userObj["email"];
     profileDescription.textContent = userObj["description"]
     if (userObj["image_url"]){
-        console.log(`url : ${userObj["image_url"]}`)
         profileImage.style.backgroundImage = `url(${userObj["image_url"]})`
     } else {
         profileImage.style.backgroundImage = `url(https://res.cloudinary.com/dndeflndh/image/upload/v1779044690/Capture_d_e%CC%81cran_2026-05-17_a%CC%80_21.04.43_rmc8mm.png)`
@@ -79,7 +78,6 @@ formSubmitBtn.addEventListener("click", async (e) => {
     const formData = createFormData()
     const data = await uploadForm(formData);
     setCurrentUser(data)
-    console.log('state user : ', STATE.currentUser)
     toggleSections([profileForm], [profileSection, profileInfos])
     displayInfos(STATE.currentUser);
     cleanInputs([modifyDescription, modifyEmail, modifyName, modifySurname])
