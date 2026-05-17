@@ -119,7 +119,7 @@ cancelNewPostBtn.addEventListener("click", async() => {
 
 // Forum pages navigation
 forumNextBtn.addEventListener("click", async() => {
-    if (STATE.forumPage < STATE.maxPage){
+    if (STATE.forumPage < STATE.forumTotalPages){
             STATE.forumPage++;
     }
     renderForum('forumNewtBtn');
