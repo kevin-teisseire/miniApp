@@ -97,7 +97,6 @@ export function renderForum(path = null) {
 // Save new post
 async function sendPost() {
     const res = await post(newPostTitle.value, newPostDescription.value, STATE.currentUser["user_id"])
-    console.log('sendPost(): ', res)
     return res
 }
 
@@ -108,7 +107,8 @@ createNewPostBtn.addEventListener("click", () => {
 
 sendNewPostBtn.addEventListener("click", async () => {
     const newPost = await sendPost()
-    setForumParam(newPost)
+    const forumRes = await loadForum()
+    setForumParam(forumRes)
     renderForum()
     displayPostStatusMessage(newPost.status)
     toggleSections([newPostPopup], [postStatusMessage])
