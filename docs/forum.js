@@ -94,11 +94,6 @@ export function renderForum(path = null) {
     }
 }
 
-// Save new post
-async function sendPost() {
-    const res = await post(newPostTitle.value, newPostDescription.value, STATE.currentUser["user_id"])
-    return res
-}
 
 // Send a new post button
 createNewPostBtn.addEventListener("click", () => {
@@ -106,7 +101,7 @@ createNewPostBtn.addEventListener("click", () => {
 })
 
 sendNewPostBtn.addEventListener("click", async () => {
-    const newPost = await sendPost()
+    const newPost = await post(newPostTitle.value, newPostDescription.value, STATE.currentUser["user_id"])
     const forumRes = await loadForum()
     setForumParam(forumRes)
     renderForum()
