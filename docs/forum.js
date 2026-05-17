@@ -101,6 +101,7 @@ createNewPostBtn.addEventListener("click", () => {
 })
 
 sendNewPostBtn.addEventListener("click", async () => {
+    console.log('user_id: ', STATE.user_id)
     const newPost = await post(newPostTitle.value, newPostDescription.value, STATE.currentUser["user_id"])
     const forumRes = await loadForum()
     setForumParam(forumRes)
