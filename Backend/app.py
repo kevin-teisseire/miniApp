@@ -104,6 +104,7 @@ def signup():
         lastname = data.get("lastname")
         email = data.get("email")
         password = data.get("password")
+        image_url = "https://res.cloudinary.com/dndeflndh/image/upload/v1779044690/Capture_d_e%CC%81cran_2026-05-17_a%CC%80_21.04.43_rmc8mm.png"
 
         conn = psycopg2.connect(
         os.getenv("DATABASE_URL"),
@@ -118,7 +119,7 @@ def signup():
         existingUser = cursor.fetchone()
         if not existingUser:
             cursor.execute(
-                "INSERT INTO users (first_name, last_name, email, password) VALUES (%s, %s, %s, %s)", (firstname, lastname, email, password)
+                "INSERT INTO users (first_name, last_name, email, password, image_url) VALUES (%s, %s, %s, %s, %s)", (firstname, lastname, email, password, image_url)
             )
             user_id = cursor.lastrowid
             conn.commit()
