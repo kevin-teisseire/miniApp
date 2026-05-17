@@ -232,7 +232,7 @@ def upload():
         "last_name": updatedUser["last_name"],
         "email": updatedUser["email"],
         "description": updatedUser["description"],
-        "image_url": img_url
+        "img_url": img_url
     }), 200
 
 # ------ Path to images ------

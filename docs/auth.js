@@ -28,7 +28,7 @@ export function setCurrentUser(data){
         lastName: data.last_name,
         email: data.email,
         description: data.description,
-        imgUrl: data.img_url,
+        imgUrl: data.image_url,
         userId: data.user_id
     };
     STATE.currentUser = user
