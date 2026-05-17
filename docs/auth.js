@@ -22,9 +22,15 @@ loginTxt.addEventListener('click', () => {
 })
 
 // Login 
-export function setCurrentUser(user){
-    console.log(`set current user : ${user}`)
-    STATE.currentUser = user;
+export function setCurrentUser(data){
+    STATE.currentUser = {
+        firstName: data.first_name,
+        lastName: data.last_name,
+        email: data.email,
+        description: data.description,
+        imgUrl: data.img_url,
+        userId: data.user_id
+    };
     localStorage.setItem("user", JSON.stringify(user));
 }
 
