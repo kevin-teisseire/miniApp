@@ -24,12 +24,12 @@ loginTxt.addEventListener('click', () => {
 // Login 
 export function setCurrentUser(data){
     const user = {
-        firstName: data.first_name,
-        lastName: data.last_name,
+        first_name: data.first_name,
+        last_name: data.last_name,
         email: data.email,
         description: data.description,
-        imgUrl: data.image_url,
-        userId: data.user_id
+        image_url: data.image_url,
+        user_id: data.user_id
     };
     STATE.currentUser = user
     localStorage.setItem("user", JSON.stringify(user));
@@ -43,13 +43,13 @@ async function logUserIn(){
     isLoading = true;
     try{
         const email = document.getElementById('login-email-ipt').value;
-        const passWord = document.getElementById('login-pw-ipt').value;
+        const password = document.getElementById('login-pw-ipt').value;
         // Check infos missing
         if (!email || !passWord){
             alert("Some fields are missing");
             return;
         }
-        const loginRes = await login(email, passWord);
+        const loginRes = await login(email, password);
         // User found in DB
         console.log('loginRes: ',loginRes)
         if (loginRes.status === "success"){ 
@@ -81,15 +81,15 @@ loginBtn.addEventListener("click", () => {
 // Signup button
 async function signUserUp(){
     // Save input values
-    const firstName = document.getElementById('first-name-ipt').value;
-    const lastName = document.getElementById('last-name-ipt').value;
+    const first_name = document.getElementById('first-name-ipt').value;
+    const last_name = document.getElementById('last-name-ipt').value;
     const email = document.getElementById('signup-email-ipt').value;
-    const passWord = document.getElementById('signup-pw-ipt').value;
+    const password = document.getElementById('signup-pw-ipt').value;
     // Check field values
-    if (!firstName || !lastName || !email || !passWord){
+    if (!first_name || !last_name || !email || !password){
         alert("Some fields are missing")
     } else {
-        const res = await signUp(firstName, lastName, email, passWord);
+        const res = await signUp(first_name, last_name, email, password);
         if (res.data.status === "success"){
             setCurrentUser(res.user);
             toggleSections([signupWrapper], [loginWrapper]);

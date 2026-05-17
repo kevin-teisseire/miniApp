@@ -4,7 +4,7 @@
 /* ------ Log in ------ */
 
 
-export async function login(email, passWord){
+export async function login(email, password){
     const res = await fetch("https://miniapp-cc0r.onrender.com/login", {
         method: "POST",
         headers: {
@@ -12,7 +12,7 @@ export async function login(email, passWord){
         },
         body: JSON.stringify({
             email: email,
-            password: passWord
+            password: password
         })
     })
     const data = await res.json();
@@ -21,25 +21,25 @@ export async function login(email, passWord){
 
 /* ------ Sign up ------ */
 
-export async function signUp(firstName, lastName, email, passWord){
+export async function signUp(first_name, last_name, email, password){
    const res = await fetch("https://miniapp-cc0r.onrender.com/signup", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
-            firstname: firstName,
-            lastname: lastName,
+            first_name: first_name,
+            last_name: last_name,
             email: email,
-            password: passWord
+            password: password
         })
     })
     const data = await res.json()
     let user = null
     if (data.status === "success"){
         user = {
-            firstName: firstName,
-            lastName: lastName,
+            first_name: first_name,
+            last_name: last_name,
             email: email,
             user_id: data.user_id
         }

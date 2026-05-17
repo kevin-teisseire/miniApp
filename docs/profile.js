@@ -12,14 +12,14 @@ import { uploadForm } from "./API.js"
 
 export function displayInfos(userObj){
     // Display user infos in inputs
-    greeting.textContent = `Hi ${userObj["firstName"]} !`
-    profileName.textContent = userObj["firstName"];
-    profileSurname.textContent = userObj["lastName"];
+    greeting.textContent = `Hi ${userObj["first_name"]} !`
+    profileName.textContent = userObj["first_name"];
+    profileSurname.textContent = userObj["last_name"];
     profileEmail.textContent = userObj["email"];
     profileDescription.textContent = userObj["description"]
-    if (userObj["imgUrl"]){
-        console.log(`url : ${userObj["imgUrl"]}`)
-        profileImage.style.backgroundImage = `url(${userObj["imgUrl"]})`
+    if (userObj["image_url"]){
+        console.log(`url : ${userObj["image_url"]}`)
+        profileImage.style.backgroundImage = `url(${userObj["image_url"]})`
     } else {
         profileImage.style.backgroundImage = `url(https://res.cloudinary.com/dndeflndh/image/upload/v1779044690/Capture_d_e%CC%81cran_2026-05-17_a%CC%80_21.04.43_rmc8mm.png)`
         
@@ -96,13 +96,13 @@ function placeHolderText(input, text){
 }
 
 function profilePlaceholders(user){
-    placeHolderText(modifyName, user["firstName"])
-    placeHolderText(modifySurname, user["lastName"])
+    placeHolderText(modifyName, user["first_name"])
+    placeHolderText(modifySurname, user["last_name"])
     placeHolderText(modifyEmail, user["email"])
     if (user["description"]){
         placeHolderText(modifyDescription, user["description"])
     }
-    modifyImage.style.backgroundImage = `url(${user["imgUrl"]})`
+    modifyImage.style.backgroundImage = `url(${user["image_url"]})`
 }
 
 profileModBtn.addEventListener("click", () => {
