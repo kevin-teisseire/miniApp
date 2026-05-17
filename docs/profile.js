@@ -76,8 +76,8 @@ function createFormData(){
 formSubmitBtn.addEventListener("click", async (e) => {
     e.preventDefault();
     const formData = createFormData()
-    const user = await uploadForm(formData);
-    setCurrentUser(user)
+    const data = await uploadForm(formData);
+    setCurrentUser(data)
     console.log('state user : ', STATE.currentUser)
     toggleSections([profileForm], [profileSection, profileInfos])
     displayInfos(STATE.currentUser);

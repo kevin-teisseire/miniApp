@@ -60,14 +60,7 @@ export async function uploadForm(formData){
         body: formData
     })
     const data = await res.json()
-    const user = {
-        firstName: data.first_name,
-        lastName: data.last_name,
-        description: data.description,
-        email: data.email, 
-        imgUrl: data.image_url
-    }
-    return user
+    return data
 }
 
 export async function loadForum(){
