@@ -23,6 +23,7 @@ loginTxt.addEventListener('click', () => {
 
 // Login 
 export function setCurrentUser(user){
+    console.log(`set current user : ${user}`)
     STATE.currentUser = user;
     localStorage.setItem("user", JSON.stringify(user));
 }
@@ -46,7 +47,7 @@ async function logUserIn(){
         console.log(`loginRes: ${loginRes}`)
         // User found in DB
         if (loginRes.status === "success"){ 
-            setCurrentUser(res.user);
+            setCurrentUser(loginRes.user);
             displayInfos(STATE.currentUser);
             // Load forum messages
             const forumRes = await loadForum();
