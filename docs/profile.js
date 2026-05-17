@@ -21,7 +21,7 @@ export function displayInfos(userObj){
         console.log(`url : ${userObj["imgUrl"]}`)
         profileImage.style.backgroundImage = `url(${userObj["imgUrl"]})`
     } else {
-        profileImage.style.backgroundImage = 'https://res.cloudinary.com/dndeflndh/image/upload/v1779044690/Capture_d_e%CC%81cran_2026-05-17_a%CC%80_21.04.43_rmc8mm.png'
+        profileImage.style.backgroundImage = `url(https://res.cloudinary.com/dndeflndh/image/upload/v1779044690/Capture_d_e%CC%81cran_2026-05-17_a%CC%80_21.04.43_rmc8mm.png)`
         
     }
 }
