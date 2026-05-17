@@ -71,7 +71,8 @@ export function setForumParam(res){
     })
 }
 
-export function renderForum(){
+export function renderForum(path=null){
+    console.log(path)
     // Reset html
     forumBody.innerHTML = ''
     // Divide post display 4x4
@@ -119,7 +120,7 @@ forumNextBtn.addEventListener("click", async() => {
     if (STATE.forumPage < STATE.maxPage){
             STATE.forumPage++;
     }
-    renderForum();
+    renderForum('forumNewtBtn');
 })
 
 forumPrevBtn.addEventListener("click", async() => {
