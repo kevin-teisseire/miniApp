@@ -42,14 +42,14 @@ async function logUserIn(){
             alert("Some fields are missing");
             return;
         }
-        const res = await login(email, passWord);
+        const loginRes = await login(email, passWord);
         // User found in DB
-        if (res.status === "success"){ 
+        if (loginRes.status === "success"){ 
             setCurrentUser(res.user);
             displayInfos(STATE.currentUser);
             // Load forum messages
-            const res = await loadForum();
-            setForumParam(res)
+            const forumRes = await loadForum();
+            setForumParam(forumRes)
             renderForum()
             toggleSections([authPop], [main, profileSection, profileInfos, navBar]);
             pageWrapper.style.justifyContent = '';
