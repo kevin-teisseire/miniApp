@@ -43,12 +43,14 @@ async function logUserIn(){
             return;
         }
         const loginRes = await login(email, passWord);
+        console.log(`loginRes: ${loginRes}`)
         // User found in DB
         if (loginRes.status === "success"){ 
             setCurrentUser(res.user);
             displayInfos(STATE.currentUser);
             // Load forum messages
             const forumRes = await loadForum();
+            console.log(`forumRes: ${forumRes}`)
             setForumParam(forumRes)
             renderForum()
             toggleSections([authPop], [main, profileSection, profileInfos, navBar]);
