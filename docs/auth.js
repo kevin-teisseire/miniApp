@@ -45,6 +45,8 @@ async function logUserIn(){
         }
         const loginRes = await login(email, passWord);
         // User found in DB
+        console.log('loginRes: ',loginRes)
+        console.log('loginRes.data: ',loginRes.data)
         if (loginRes.data.status === "success"){ 
             console.log('success')
             setCurrentUser(loginRes.user);

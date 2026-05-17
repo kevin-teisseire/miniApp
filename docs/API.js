@@ -1,8 +1,8 @@
 /* ========================
             API
 =========================== */
-
 /* ------ Log in ------ */
+
 
 export async function login(email, passWord){
     const res = await fetch("https://miniapp-cc0r.onrender.com/login", {
