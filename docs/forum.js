@@ -97,7 +97,7 @@ export function renderForum(path = null) {
 // Save new post
 async function sendPost() {
     const res = await post(newPostTitle.value, newPostDescription.value, STATE.currentUser["user_id"])
-    console.log(`sendPost(): ${res}`)
+    console.log('sendPost(): ', res)
     return res
 }
 
