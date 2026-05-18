@@ -5,7 +5,7 @@
 /* ------ Log in ------ */
 
 export async function login(email, password){
-    const res = await fetch("https://miniapp-cc0r.onrender.com/login", {
+    const res = await fetch(`${API_URL}/login`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -22,7 +22,7 @@ export async function login(email, password){
 /* ------ Sign up ------ */
 
 export async function signUp(first_name, last_name, email, password){
-   const res = await fetch("https://miniapp-cc0r.onrender.com/signup", {
+   const res = await fetch(`${API_URL}/signup`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -55,7 +55,7 @@ export async function signUp(first_name, last_name, email, password){
 
 export async function uploadForm(formData){
     // Promise
-    const res = await fetch("https://miniapp-cc0r.onrender.com/upload", {
+    const res = await fetch(`${API_URL}/upload`, {
         method: "POST",
         body: formData
     });
@@ -64,7 +64,7 @@ export async function uploadForm(formData){
 };
 
 export async function loadForum(){
-    const res = await fetch("https://miniapp-cc0r.onrender.com/get-forum", {
+    const res = await fetch(`${API_URL}/get-forum`, {
         method: "GET"
     })
     const data = await res.json();
@@ -74,7 +74,7 @@ export async function loadForum(){
 /* ------ Forum ------ */
 
 export async function post(title, description, user_id){
-    const res = await fetch("https://miniapp-cc0r.onrender.com/post", {
+    const res = await fetch(`${API_URL}/post`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
