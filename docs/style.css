@@ -108,7 +108,7 @@ em{
 }
 
 /* Profile section */
-#profile-section, #forum-section, #search-section{
+#profile-section, #forum-section, #search-section, #message-section{
     width: 100%;
     display: none;
     opacity: 0;
@@ -135,6 +135,11 @@ em{
     border-radius: 50%;
     width: 150px;
     height: 150px;
+}
+
+.profile-image.check-profile{
+    justify-self: center;
+    aspect-ratio: 1;
 }
 
 .modify-img-label{
@@ -183,7 +188,7 @@ em{
     border: 1px solid black;
 }
 
-#modify-profile-img, #profile-img{
+#modify-profile-img, #profile-img, #check-profile-img{
     background-size: cover;
     background-position: center;
 }
@@ -274,6 +279,10 @@ ul{
     font-size: 16px;
 }
 
+.bold{
+    font-weight: bold;
+}
+
 .title-text-large{
     font-size: 20px;
 }
@@ -307,6 +316,7 @@ ul{
     border-radius: 5px;
     width: 100%;
     background-color: white;
+    cursor: pointer
 }
 
 .popup-content-wrapper{
@@ -314,7 +324,7 @@ ul{
     width: 40%;
     border-radius: 10px;
     border: 1px solid black;
-    background-color: white;
+    background-color: antiquewhite;
     position: fixed;
     padding: 20px;
     display: flex;
@@ -328,7 +338,7 @@ ul{
     justify-content: space-between;
 }
 
-.new-post-popup{
+.popup{
     width: 100%;
     height: 100%;
     position: fixed;
@@ -383,5 +393,26 @@ textarea::placeholder {
 .fa-solid{
     color: black;
     cursor: pointer;
+}
+
+#check-profile_profile-name{
+    align-self: center;
+}
+
+.check-profile_content{
+    border: 1px solid gray;
+    border-radius: 10px;
+    background-color: white;
+    height: 100%;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    row-gap: 20px;
+}
+
+.pop-up_section-wrapper{
+    display: flex;
+    flex-direction: column;
+    row-gap: 5px;
 }
 

@@ -45,6 +45,12 @@ export const forumNextBtn = document.getElementById('forum-next-btn')
 export const forumPrevBtn = document.getElementById('forum-prev-btn')
 export const newPostTitle = document.getElementById('new-post-title-input')
 export const newPostDescription = document.getElementById('new-post-description-input')
+export const checkProfilePopup = document.getElementById('check-profile-popup')
+export const cancelCheckBtn = document.getElementById('check-profile_close-btn')
+export const messageSection = document.getElementById('message-section')
+
+
+
 
 
 

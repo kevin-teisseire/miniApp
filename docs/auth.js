@@ -56,6 +56,7 @@ async function logUserIn(){
             displayInfos(STATE.currentUser);
             // Load forum messages
             const forumRes = await loadForum();
+            console.log(forumRes)
             setForumParam(forumRes);
             renderForum();
             toggleSections([authPop], [main, profileSection, profileInfos, navBar]);

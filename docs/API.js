@@ -71,6 +71,7 @@ export async function loadForum(){
     })
     const data = await res.json();
     return data;
+    console.log(data)
 };
 
 /* ------ Forum ------ */
@@ -90,6 +91,8 @@ export async function post(title, description, user_id){
     const data = await res.json();
     return data;
 };
+
+
 
 
 

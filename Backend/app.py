@@ -66,21 +66,30 @@ def fetch_all_posts(cursor):
                    forum_posts.created_at,
                    forum_posts.user_id,
                    users.first_name, 
-                   users.image_url AS user_image_url
+                   users.last_name,
+                   users.image_url AS user_image_url,
+                   users.description,
+                   users.email
                    FROM forum_posts
                    JOIN users ON forum_posts.user_id = users.id
                    ORDER BY forum_posts.created_at DESC
                    """)
     rows = cursor.fetchall()
-    print(f"fetchAllposts : {[p for p in rows]}")
     return [{
-        "id": p["post_id"],
-        "title": p["title"],
-        "description" : p["content"],
-        "date": p["created_at"],
-        "user": p["user_id"],
-        "image_url" : p["user_image_url"],
-        "first_name": p["first_name"]
+        "post_details": {
+            "id": p["post_id"],
+            "title": p["title"],
+            "description" : p["content"],
+            "date": p["created_at"],
+        },
+        "user_details": {
+            "user": p["user_id"],
+            "first_name": p["first_name"],
+            "last_name": p["last_name"],
+            "description": p["description"],
+            "email": p["email"],
+            "image_url" : p["user_image_url"]
+        }       
     } for p in rows]
 
 
@@ -259,9 +268,6 @@ def getMessages():
             connect_timeout = 10
             )
         cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-        # page = request.args.get("page", 1, type=int)
-        # limit = 4
-        # offset = (page - 1) * limit
         posts = fetch_all_posts(cursor)
         print("posts :", posts)
         cursor.execute("SELECT COUNT(*) as total_posts FROM forum_posts")
