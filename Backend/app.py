@@ -203,8 +203,8 @@ def upload():
         )
     # Format DB response 
     cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-    image_url = None
     # Check for new data
+    image_url = None
     if new_image:
         # Upload image
         result = cloudinary.uploader.upload(new_image)
@@ -218,11 +218,12 @@ def upload():
         cursor.execute("UPDATE users SET last_name = %s WHERE id = %s", (new_surname, user_id))
     if new_email:
         cursor.execute("UPDATE users SET email = %s WHERE id = %s", (new_email, user_id))
-        email = new_email
     conn.commit()
     # Get user data after modification
     cursor.execute("SELECT * FROM users WHERE id = %s", (user_id,))
     updatedUser = cursor.fetchone()
+    if not new_image and updatedUser["image_url"]:
+        image_url = updatedUser["image_url"]
     conn.close()
     # Format response
     return jsonify({

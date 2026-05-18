@@ -31,7 +31,7 @@ export function setCurrentUser(data){
         image_url: data.image_url,
         user_id: data.user_id
     };
-    STATE.currentUser = user
+    STATE.currentUser = user;
     localStorage.setItem("user", JSON.stringify(user));
 };
 
