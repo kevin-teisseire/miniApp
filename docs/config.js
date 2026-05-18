@@ -9,4 +9,4 @@ const API_URLS = {
     prod: "https://miniapp-cc0r.onrender.com"
 }
 
-const API_URL = isLocal ? API_URLS.local : API_URLS.prod;
+export const API_URL = isLocal ? API_URLS.local : API_URLS.prod;
