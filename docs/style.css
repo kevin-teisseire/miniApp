@@ -88,6 +88,11 @@ em{
     border-radius: 5px;
     padding: 5px 20px;
     cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.auth-btns:hover{
+    background-color:rgb(222, 168, 60);
 }
 
 .error-message{
@@ -123,7 +128,16 @@ em{
     display: flex;
     flex-direction: column;
     align-items: center;
-    row-gap: 20px;
+    row-gap: 10px;
+}
+
+#forum-section{
+    row-gap: 10px;
+}
+
+#forum-message-section{
+    overflow: scroll;
+    scrollbar-width: none;
 }
 
 .profile-form-header{
@@ -207,9 +221,6 @@ em{
     column-gap: 40px;
 }
 
-#form-cancel-btn{
-    background-color: rgba(255, 0, 0, 0.337);
-}
 
 #custom-uploader{
     border: 1px solid black;
@@ -220,8 +231,13 @@ em{
     display: flex;
     justify-content: center;
     align-self: center;
-    background-color: rgb(185, 159, 125);
+    background-color: rgb(222, 168, 60);;
     cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#custom-uploader:hover{
+    background-color: white;
 }
 
 .navbar{
@@ -285,7 +301,7 @@ ul{
 }
 
 .title-text-small{
-    font-size: 16px;
+    font-size: 18px;
 }
 
 .bold{
@@ -297,7 +313,7 @@ ul{
 }
 
 .body-text-small{
-    font-size: 14px;
+    font-size: 16px;
 }
 
 .small-image-wrapper{
@@ -432,7 +448,6 @@ textarea::placeholder {
     border: 1px solid black;
     border-radius: 10px;
     padding: 10px;
-    width: 100%;
     background-color: white;
     display: flex;
     flex-direction: row;
@@ -449,6 +464,7 @@ textarea::placeholder {
 
 .large-body-left{
     width: 80%;
+    padding-right: 5px;
 }
 
 .small-body-right{
@@ -474,6 +490,8 @@ textarea::placeholder {
     width: 100%;
     justify-self: flex-start;
     align-items: center;
+    overflow: scroll;
+    scrollbar-width: none;
 }
 
 .answer-card{
