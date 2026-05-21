@@ -85,11 +85,6 @@ export function renderAnswers(data){
         answer.id = "answer-user-answer"
         answerBodyRight.appendChild(answer)
         answer.textContent = element.message
-        // Like button
-        const likeBtn = document.createElement("i")
-        likeBtn.id = "answer-like-btn"
-        likeBtn.classList.add("fa-regular", "fa-heart", "message-btns")
-        answerCard.appendChild(likeBtn)
     });
 }
 
