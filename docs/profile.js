@@ -79,7 +79,6 @@ formSubmitBtn.addEventListener("click", async (e) => {
     setCurrentUser(data);
     toggleSections([profileForm], [profileSection, profileInfos]);
     displayInfos(STATE.currentUser);
-    console.log(data)
     cleanInputs([modifyDescription, modifyEmail, modifyName, modifySurname]);
 });
 

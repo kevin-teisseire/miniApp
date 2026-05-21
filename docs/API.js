@@ -65,8 +65,9 @@ export async function uploadForm(formData){
     return data;
 };
 
-export async function loadForum(){
-    const res = await fetch(`${API_URL}/get-forum`, {
+export async function loadForum(user_id){
+    console.log("loadForum: user_id = ", user_id )
+    const res = await fetch(`${API_URL}/get-forum?user_id=${user_id}`, {
         method: "GET"
     })
     const data = await res.json();
@@ -92,6 +93,60 @@ export async function post(title, description, user_id){
     return data;
 };
 
+export async function postAnswer(message, post_id, user_id){
+    const res = await fetch(`${API_URL}/send-answer`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            message: message,
+            post_id: post_id,
+            user_id: user_id
+        })
+    })
+    const data = await res.json()
+    return data
+}
+
+export async function getAnswers(post_id, user_id){
+    const res = await fetch(`${API_URL}/get-answers?post_id=${post_id}&user_id=${user_id}`, {
+        method: "GET",
+    })
+    const data = await res.json()
+    return data
+}
+
+export async function increaseLikes(post_id, user_id){
+    const res = await fetch(`${API_URL}/increase-likes`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            post_id: post_id,
+            user_id: user_id
+        })
+    })
+    const data = await res.json()
+    return data
+}
+
+export async function decreaseLikes(post_id, user_id){
+    const res = await fetch(`${API_URL}/decrease-likes`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            post_id: post_id,
+            user_id: user_id
+        })
+    })
+    const data = await res.json()
+    return data
+    
+}
 
 
 

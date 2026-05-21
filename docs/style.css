@@ -108,7 +108,7 @@ em{
 }
 
 /* Profile section */
-#profile-section, #forum-section, #search-section, #message-section{
+#profile-section, #forum-section, #search-section, #forum-message-section{
     width: 100%;
     display: none;
     opacity: 0;
@@ -116,6 +116,14 @@ em{
     row-gap: 20px;
     transition: 0.3s ease opacity;
     align-items: center;
+}
+
+#forum-main-section{
+    opacity: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    row-gap: 20px;
 }
 
 .profile-form-header{
@@ -316,7 +324,9 @@ ul{
     border-radius: 5px;
     width: 100%;
     background-color: white;
-    cursor: pointer
+    cursor: pointer;
+    row-gap: 5px;
+    
 }
 
 .popup-content-wrapper{
@@ -416,3 +426,116 @@ textarea::placeholder {
     row-gap: 5px;
 }
 
+/* ------ Message section ------ */
+.white-card{
+    border: 1px solid black;
+    border-radius: 10px;
+    padding: 10px;
+    width: 100%;
+    background-color: white;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    
+}
+
+.spaced-section{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+}
+
+.large-body-left{
+    width: 80%;
+}
+
+.small-body-right{
+    border-left: 1px solid black;
+    padding-left: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20%;
+    column-gap: 20%;
+}
+
+.message-btns{
+    cursor: pointer;
+}
+
+
+.flex-body-container{
+    display: flex;
+    flex-direction: column;
+    row-gap: 10px;
+    height: 100%;
+    width: 100%;
+    justify-self: flex-start;
+    align-items: center;
+}
+
+.answer-card{
+    border: 1px solid black;
+    width: 95%;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    padding: 5px 10px;
+    background-color: white;
+    column-gap: 10px;
+}
+
+.small-image-container{
+    border: 1px solid black;
+    border-radius: 50%;
+    height: 40px;
+    width: 40px;
+}
+
+.answer-body-left{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.answer-body-right{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.answer-right-header{
+    display: flex;
+    column-gap: 10px;
+}
+
+.light-text{
+    color: gray;
+}
+
+.small-image-container{
+    background-size: cover;
+    background-position: center;
+}
+
+.count-icn-wrapper{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    column-gap: 5px;
+}
+
+.social-icns-wrapper{
+    display: flex;
+    flex-direction: row;
+    column-gap: 20px;
+    justify-content: flex-end;
+    height: 100%;
+    align-items: last baseline;
+}
+
+.fa-solid, .fa-regular{
+    color: rgb(0, 0, 0, 0.3);
+}

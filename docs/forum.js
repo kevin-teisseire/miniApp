@@ -1,19 +1,21 @@
-import {
-    forumBody, postNavPages, postStatusMessage, newPostTitle, newPostDescription, newPostPopup, createNewPostBtn,
-    sendNewPostBtn, cancelNewPostBtn, forumNextBtn, forumPrevBtn, checkProfilePopup, 
-    cancelCheckBtn,
-    messageSection,
-    forumSection} from "./dom.js";
+
+import { forumBody, postNavPages, postStatusMessage, newPostTitle, newPostDescription, newPostPopup, createNewPostBtn,
+        sendNewPostBtn, cancelNewPostBtn, forumNextBtn, forumPrevBtn, checkProfilePopup, cancelCheckBtn,
+        messageSection,forumSection,forumMessageSection, forumMainSection, messagesPostTitle, 
+        messagesPostDescription, checkProfileLastName, checkProfileDescription, checkProfileEmail, 
+        checkProfileName, checkImage,
+        ogPostLikeCounter,
+        ogPostMessageCounter,
+        ogPostLikeBtn} from "./dom.js";
 import { show, hide, toggleSections, cleanInputs } from "./UI.js";
-import { loadForum, post } from "./API.js";
+import { getAnswers, loadForum, post } from "./API.js";
 import { STATE } from "./state.js";
+import { renderAnswers, renderLikeIcn, toggleFocusedPostAnswers } from "./answers.js"
 
 
 /* ========================
             Forum
 =========================== */
-
-
 
 // Create existing posts HTML
 function createForumPostsHtml(element) {
@@ -55,6 +57,7 @@ function createForumPostsHtml(element) {
     // Right card side
     const postBodyRight = document.createElement("div");
     postBodyRight.classList.add("post-body-right");
+    postBodyRight.id = "go-messages-btn"
     post.appendChild(postBodyRight);
     // Post title
     const postTitle = document.createElement("h5");
@@ -68,6 +71,49 @@ function createForumPostsHtml(element) {
     postDescription.id = "post-description";
     postDescription.textContent = element.post_details.description;
     postBodyRight.appendChild(postDescription);
+
+    /* ------ Social icns ------ */
+    // Icns section wrapper
+    const socialIcnsWrapper = document.createElement("div")
+    socialIcnsWrapper.classList.add("social-icns-wrapper")
+    socialIcnsWrapper.id = "post-socials"
+    postBodyRight.appendChild(socialIcnsWrapper)
+    // Count answers wrapper
+    const countWrapper = document.createElement("div")
+    countWrapper.classList.add("count-icn-wrapper")
+    socialIcnsWrapper.appendChild(countWrapper)
+    socialIcnsWrapper.id = "post-count-wrapper"
+    // answer count
+    const answerCount = document.createElement("p")
+    answerCount.textContent = element.post_details.answers
+    countWrapper.appendChild(answerCount)
+    // answer Icn
+    const messageIcn = document.createElement("i")
+    // Is post answered by user ? 
+    if(!element.post_details.answered_by_user){
+        messageIcn.classList.add("fa-regular", "fa-message",  "message-btns")
+    } else {
+        messageIcn.classList.add("fa-solid", "fa-message",  "message-btns")
+    }
+    countWrapper.appendChild(messageIcn)
+    // like count wrapper
+    const likeWrapper = document.createElement("div")
+    likeWrapper.classList.add("count-icn-wrapper")
+    socialIcnsWrapper.appendChild(likeWrapper)
+    likeWrapper.id = "post-like-wrapper"
+    // like count
+    const likeCount = document.createElement("p")
+    likeCount.textContent = element.post_details.likes
+    likeWrapper.appendChild(likeCount)
+    // like Icn
+    const likeIcn = document.createElement("i")
+    // Is post liked by user ? 
+        if(!element.post_details.liked_by_user){
+          likeIcn.classList.add("fa-regular", "fa-heart",  "message-btns")
+    } else {
+          likeIcn.classList.add("fa-solid", "fa-heart",  "message-btns")
+    }
+    likeWrapper.appendChild(likeIcn)
 }
 
 // Render forum 
@@ -107,7 +153,7 @@ createNewPostBtn.addEventListener("click", () => {
 
 sendNewPostBtn.addEventListener("click", async () => {
     const newPost = await post(newPostTitle.value, newPostDescription.value, STATE.currentUser["user_id"]);
-    const forumRes = await loadForum();
+    const forumRes = await loadForum(STATE.currentUser["user_id"]);
     setForumParam(forumRes);
     renderForum();
     displayPostStatusMessage(newPost.status);
@@ -153,18 +199,13 @@ async function displayPostStatusMessage(status) {
 // Check profile pop up
 
 function displayCheckProfileInfos(user){
-    const profileName = document.getElementById('check-profile_profile-name');
-    const profileLastName = document.getElementById('check-profile_last-name');
-    const profileEmail = document.getElementById('check-profile_profile-email');
-    const profileDescription = document.getElementById('check-profile_profile-description');
-    const image = document.getElementById('check-profile-img');
-    profileLastName.textContent = user.last_name;
-    profileDescription.textContent = user.description;
-    profileEmail.textContent = user.email;
-    profileName.textContent = user.first_name;
-    image.style.background = `url(${user.image_url})`;
-    image.style.backgroundSize = 'cover';
-    image.style.backgroundPosition = 'center';
+    checkProfileLastName.textContent = user.last_name;
+    checkProfileDescription.textContent = user.description;
+    checkProfileEmail.textContent = user.email;
+    checkProfileName.textContent = user.first_name;
+    checkImage.style.background = `url(${user.image_url})`;
+    checkImage.style.backgroundSize = 'cover';
+    checkImage.style.backgroundPosition = 'center';
 
 }
 // Check for click on forum-post profile image
@@ -179,10 +220,40 @@ document.body.addEventListener("click", (e) => {
     }
 })
 
-//Check for click on forum-post body
-document.body.addEventListener("click", (e) => {
-    if (e.target.id === "post-body-right"){
-        toggleSections(forumSection, messageSection)
+// Check for click on forum-post body
+document.body.addEventListener("click", async (e) => {
+    // If a post is clicked
+    if (
+        e.target.id === "go-messages-btn" ||
+        e.target.id === "post-title" ||
+        e.target.id === "post-description" ||
+        e.target.id === "post-socials" ||
+        e.target.id === "post-count-wrapper" ||
+        e.target.id === "post-like-wrapper" 
+    ){
+        const postEl = e.target.closest('.large-card')
+        if (!postEl) return
+        // Save clicked post ID
+        const postId = Number(postEl.dataset.postId)
+        // Find corresponding post data saved in state
+        STATE.clickedPost = STATE.forumPosts.find(p => p.post_details.id === postId)
+        // Launch fetch to get all answers to this post
+        const messageList = await getAnswers(postId, STATE.currentUser.user_id)
+        // Save answer list in STATE
+        STATE.messages = messageList
+        // Did user like ? 
+        if (messageList.liked_by_user === true){
+            ogPostLikeBtn.classList.remove("fa-regular")
+            ogPostLikeBtn.classList.add("fa-solid")
+        }
+        // Inject content of focused post in existing HTML
+        renderFocusedPost(STATE.clickedPost)
+        // Create HTML for each answer
+        renderAnswers(messageList)
+        // Did user like this post ? 
+        renderLikeIcn()
+        // Toggle sections
+        toggleSections([forumMainSection], [forumMessageSection])
     }
 })
 
@@ -198,3 +269,16 @@ document.body.addEventListener("click", (e) => {
     displayCheckProfileInfos(postData.user_details)
 })
 
+function renderFocusedPost(post){
+    // Display post title
+    messagesPostTitle.textContent = post.post_details.title
+    // Display post description
+    messagesPostDescription.textContent = post.post_details.description
+    // Display answer count
+    ogPostMessageCounter.textContent = post.post_details.answers
+    // Display like count on post
+    ogPostLikeCounter.textContent = post.post_details.likes
+    // Did user answer ?
+    toggleFocusedPostAnswers("load")
+ 
+}

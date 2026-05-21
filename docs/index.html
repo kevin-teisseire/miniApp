@@ -23,12 +23,12 @@
                 </div>
             </div>
            <div class="flex-row-center">
-                    <button id="send-new-post-btn" class="auth-btns">Send</button>
-                    <button id="cancel-new-post-btn" class="auth-btns">Cancel</button>
+                <button id="send-new-post-btn" class="auth-btns">Send</button>
+                <button id="cancel-new-post-btn" class="auth-btns">Cancel</button>
             </div>
         </div>
     </div>
-     <div id="check-profile-popup" class="popup hidden">
+    <div id="check-profile-popup" class="popup hidden">
         <div class="popup-content-wrapper">
             <h5 id="check-profile_profile-name"class="title-text-large">Profile name</h5>
             <div class="profile-image check-profile" id="check-profile-img"></div>
@@ -48,6 +48,21 @@
             </div>
            <div class="flex-row-center">
                 <button id="check-profile_close-btn" class="auth-btns">Close</button>
+            </div>
+        </div>
+    </div>
+    <div id="answer-message-popup" class="popup hidden">
+        <div class="popup-content-wrapper">
+            <h5 class="title-text-large">Send an answer</h5>
+            <div class="popup-body">
+                <div class="multi-input-wrapper">
+                    <p class="title-text-small">Message</p>
+                    <textarea id="message-body" name="post-description" class="post-multi-input" placeholder="What's on your mind ?"></textarea>
+                </div>
+            </div>
+           <div class="flex-row-center">
+                <button id="send-answer-btn" class="auth-btns">Send</button>
+                <button id="close-answer-btn" class="auth-btns">Close</button>
             </div>
         </div>
     </div>
@@ -142,18 +157,39 @@
                 </div>
             </div>
             <div id="forum-section">
-                <div id="forum-error">
-                    <h3 id="post-status-message" class="status-message"></h3>
+                <div id="forum-main-section">
+                    <div id="forum-error">
+                        <h3 id="post-status-message" class="status-message"></h3>
+                    </div>
+                    <div id="forum-body"></div>
+                    <div class="flex-row-center">
+                        <i id="forum-prev-btn" class="fa-solid fa-angle-left"></i>
+                        <p id="post-nav-pages"></p>
+                        <i id="forum-next-btn" class="fa-solid fa-angle-right"></i>
+                    </div>
+                    <button id="create-new-post-btn" class="auth-btns">New post</button>
                 </div>
-                <div id="forum-body"></div>
-                <div class="flex-row-center">
-                    <i id="forum-prev-btn" class="fa-solid fa-angle-left"></i>
-                    <p id="post-nav-pages"></p>
-                    <i id="forum-next-btn" class="fa-solid fa-angle-right"></i>
+                <div id="forum-message-section" class="spaced-section">
+                    <div id="original-post" class="white-card">
+                        <div class="large-body-left">
+                            <h3 id="messages_post-title" class="title-text-large bold">Post title</h3>
+                            <p id="messages_post-description">description description description</p>
+                        </div>
+                        <div class="small-body-right">
+                            <div class="count-icn-wrapper">
+                                <p id="original-post-message-count" class="counter">0</p>
+                                <i id="original-post-answer-btn" class="fa-regular fa-message message-btns"></i>
+                            </div>
+                            <div class="count-icn-wrapper">
+                                <p id="original-post-like-count" class="counter">0</p>
+                                <i id="original-post-like-btn" class="fa-regular fa-heart message-btns"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="answer-container" class="flex-body-container"></div>
+                    <button id="message_back-btn" class="auth-btns">Back</button>
                 </div>
-                <button id="create-new-post-btn" class="auth-btns">New post</button>
             </div>
-            <div id="message-section"></div>
             <div id="search-section"></div>
         </div>
     </div>

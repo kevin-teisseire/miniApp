@@ -55,25 +55,51 @@ def initDB():
                    user_id INTEGER REFERENCES users(id)
         )
     """)
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS user_messages (
+            id SERIAL PRIMARY KEY,
+            message TEXT,
+            created_at TIMESTAMP DEFAULT current_timestamp,
+            post_id INTEGER REFERENCES forum_posts,
+            user_id INTEGER references users
+            )
+    """)
     conn.commit()
     conn.close()
 
-def fetch_all_posts(cursor):
+def fetch_all_posts(cursor, user_id):
     cursor.execute("""
-                   SELECT forum_posts.id AS post_id, 
-                   forum_posts.title,
-                   forum_posts.content,
-                   forum_posts.created_at,
-                   forum_posts.user_id,
-                   users.first_name, 
-                   users.last_name,
-                   users.image_url AS user_image_url,
-                   users.description,
-                   users.email
-                   FROM forum_posts
-                   JOIN users ON forum_posts.user_id = users.id
-                   ORDER BY forum_posts.created_at DESC
-                   """)
+        SELECT forum_posts.id AS post_id, 
+        forum_posts.title,
+        forum_posts.content,
+        forum_posts.created_at,
+        forum_posts.user_id,
+        users.first_name, 
+        users.last_name,
+        users.image_url AS user_image_url,
+        users.description,
+        users.email,
+                   
+        COUNT(DISTINCT post_likes.id) AS likes,
+        COUNT(DISTINCT user_messages.id) AS answers,
+                   
+        EXISTS(
+            SELECT 1 FROM post_likes
+            WHERE post_likes.post_id = forum_posts.id AND post_likes.user_id = %s           
+        ) AS liked_by_user,
+        EXISTS(
+            SELECT 1 FROM user_messages
+            WHERE user_messages.post_id = forum_posts.id AND user_messages.user_id = %s
+        ) AS answered_by_user
+                   
+        FROM forum_posts
+        JOIN users ON forum_posts.user_id = users.id
+        LEFT JOIN post_likes ON forum_posts.id = post_likes.post_id
+        LEFT JOIN user_messages ON forum_posts.id = user_messages.post_id
+                   
+        GROUP BY forum_posts.id, users.id
+        ORDER BY forum_posts.created_at DESC;
+    """, (user_id, user_id))
     rows = cursor.fetchall()
     return [{
         "post_details": {
@@ -81,6 +107,10 @@ def fetch_all_posts(cursor):
             "title": p["title"],
             "description" : p["content"],
             "date": p["created_at"],
+            "likes": p["likes"],
+            "answers": p["answers"],
+            "liked_by_user": p["liked_by_user"],
+            "answered_by_user": p["answered_by_user"]
         },
         "user_details": {
             "user": p["user_id"],
@@ -268,7 +298,8 @@ def getMessages():
             connect_timeout = 10
             )
         cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-        posts = fetch_all_posts(cursor)
+        user_id = request.args.get("user_id")
+        posts = fetch_all_posts(cursor, user_id)
         print("posts :", posts)
         cursor.execute("SELECT COUNT(*) as total_posts FROM forum_posts")
         result = cursor.fetchone()
@@ -314,6 +345,138 @@ def post():
         "status": "success",
         "message": "post created",
     })
+
+@app.route("/send-answer", methods=["POST"])
+
+def sendAnswer():
+    conn = psycopg2.connect(
+        os.getenv("DATABASE_URL"),
+        sslmode = "require",
+        connect_timeout = 10
+    )
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    req = request.get_json()
+    post_id = req.get("post_id")
+    message = req.get("message")
+    user_id = req.get("user_id")
+    print('received request. post_id = ', post_id, 'user_id = ', user_id)
+    cursor.execute("""
+        INSERT INTO user_messages (message, post_id, user_id)
+        VALUES (%s, %s, %s)
+    """, (message, post_id, user_id))
+    conn.commit()
+    conn.close()
+    return jsonify({
+        "status": "success",
+        "message": "message sent"
+    })
+
+
+@app.route("/get-answers", methods=["GET"])
+
+def getAnswers():
+    conn = psycopg2.connect(
+        os.getenv("DATABASE_URL"),
+        sslmode = "require",
+        connect_timeout = 10
+    ) 
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    post_id = request.args.get("post_id")
+    user_id = request.args.get("user_id")
+    cursor.execute("""
+                   SELECT user_messages.id AS message_id,
+                   user_messages.message AS message,
+                   user_messages.created_at AS created_at,
+                   user_messages.post_id AS post_id,
+                   user_messages.user_id AS user_id,
+                   users.first_name AS first_name,
+                   users.image_url AS image_url
+                   FROM user_messages
+                   JOIN users ON user_messages.user_id = users.id
+                   WHERE user_messages.post_id = %s
+                   ORDER BY user_messages.created_at ASC
+                   """, (post_id,))
+    answers = cursor.fetchall()
+    # Calculate number of answers
+    answerCount = len(answers)
+    # Did user answer ?
+    cursor.execute("SELECT * FROM user_messages WHERE post_id = %s AND user_id = %s", (post_id, user_id))
+    answered_by_user = cursor.fetchone() is not None
+    # Get number of likes on this post
+    cursor.execute("SELECT COUNT(*) as likes from post_likes WHERE post_id = %s", (post_id,))
+    count = cursor.fetchone()
+    post_likes = count["likes"]
+    # Check if user liked this post
+    cursor.execute("SELECT * FROM post_likes WHERE post_id = %s AND user_id = %s", (post_id, user_id))
+    liked_by_user = cursor.fetchone() is not None
+    conn.close()
+    if answers:
+        return jsonify ({
+            "status": "success",
+            "message": "loaded",
+            "count": answerCount,
+            "post_likes": post_likes,
+            "liked_by_user": liked_by_user,
+            "answered_by_user": answered_by_user,
+            "answers": [{
+                "message_id": a["message_id"],
+                "message":  a["message"],
+                "created_at": a["created_at"],
+                "post_id": a["post_id"],
+                "user_id": a["user_id"],
+                "creator": a["first_name"],
+                "image_url": a["image_url"],
+            } for a in answers]
+        })
+         
+    else:
+        return jsonify({
+            "status": "error",
+            "message": "empty"
+        })
+
+@app.route("/increase-likes", methods=["POST"])
+
+def increase_likes():
+    conn = psycopg2.connect(
+        os.getenv("DATABASE_URL"),
+        sslmode = "require",
+        connect_timeout = 10
+    )
+    cursor = conn.cursor()
+    req = request.get_json()
+    post_id = req["post_id"]
+    user_id = req["user_id"]
+    cursor.execute("INSERT INTO post_likes (user_id, post_id) VALUES (%s, %s)",(user_id, post_id))
+    conn.commit()
+    conn.close()
+    return jsonify({
+        "status": "success",
+        "message": "likes increased"
+    })
+
+@app.route("/decrease-likes", methods=["POST"])
+
+def decrease_likes():
+    conn = psycopg2.connect(
+        os.getenv("DATABASE_URL"),
+        sslmode = "require",
+        connect_timeout = 10
+    )
+    cursor = conn.cursor()
+    req = request.get_json()
+    post_id = req["post_id"]
+    user_id = req["user_id"]
+    cursor.execute("DELETE FROM post_likes WHERE post_id = %s AND user_id = %s", (post_id, user_id))
+    conn.commit()
+    conn.close()
+    return jsonify({
+        "status": "success",
+        "message": "like deleted"
+    })
+
+
+
 
 
 # ======  MAIN ======
