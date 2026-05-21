@@ -25,6 +25,7 @@ function createForumPostsHtml(element) {
     post.id = "post";
     post.dataset.postId = element.post_details.id // Saving post id for later
     forumBody.appendChild(post);
+
     // Left card side
     const postBodyLeft = document.createElement("div");
     postBodyLeft.classList.add("post-body-left");
@@ -59,6 +60,10 @@ function createForumPostsHtml(element) {
     postBodyRight.classList.add("post-body-right");
     postBodyRight.id = "go-messages-btn"
     post.appendChild(postBodyRight);
+    // Card cover for click
+    const cardCover = document.createElement("div");
+    cardCover.classList.add("large-card-cover");
+    postBodyRight.appendChild(cardCover);
     // Post title
     const postTitle = document.createElement("h5");
     postTitle.classList.add("title-text-small");
@@ -149,6 +154,8 @@ export function renderForum() {
 // Send a new post button
 createNewPostBtn.addEventListener("click", () => {
     show(newPostPopup);
+    const cardCover = document.querySelectorAll('.post-body-right')
+    cardCover.forEach(el => hide(el))
 });
 
 sendNewPostBtn.addEventListener("click", async () => {
@@ -159,11 +166,15 @@ sendNewPostBtn.addEventListener("click", async () => {
     displayPostStatusMessage(newPost.status);
     toggleSections([newPostPopup], [postStatusMessage]);
     cleanInputs([newPostDescription, newPostTitle]);
+    const cardCover = document.querySelectorAll('.post-body-right')
+    cardCover.forEach(el => show(el))
 });
 
 cancelNewPostBtn.addEventListener("click", async () => {
     toggleSections([newPostPopup], [postStatusMessage]);
     cleanInputs([newPostDescription, newPostTitle]);
+    const cardCover = document.querySelectorAll('.post-body-right')
+    cardCover.forEach(el => show(el))
 });
 
 // Forum pages navigation
@@ -217,20 +228,15 @@ document.body.addEventListener("click", (e) => {
         e.target.id === "post-date"
     ){
         show(checkProfilePopup)
+        const cardCover = document.querySelectorAll('.post-body-right')
+        cardCover.forEach(el => hide(el))
     }
 })
 
 // Check for click on forum-post body
 document.body.addEventListener("click", async (e) => {
     // If a post is clicked
-    if (
-        e.target.id === "go-messages-btn" ||
-        e.target.id === "post-title" ||
-        e.target.id === "post-description" ||
-        e.target.id === "post-socials" ||
-        e.target.id === "post-count-wrapper" ||
-        e.target.id === "post-like-wrapper" 
-    ){
+    if (e.target.classList.contains("large-card-cover")){
         const postEl = e.target.closest('.large-card')
         if (!postEl) return
         // Save clicked post ID
@@ -259,6 +265,8 @@ document.body.addEventListener("click", async (e) => {
 
 cancelCheckBtn.addEventListener("click", () => {
     hide(checkProfilePopup)
+    const cardCover = document.querySelectorAll('.post-body-right')
+    cardCover.forEach(el => show(el))
 })
 
 document.body.addEventListener("click", (e) => {
