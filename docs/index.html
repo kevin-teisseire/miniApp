@@ -75,7 +75,7 @@
             </ul>
         </nav>
         <div id="auth-popup">
-            <div class="login-wrapper">
+            <div id="login-wrapper">
                 <h1>Login</h1>
                 <p id="wrong-cred-error" class="error-message"> Wrong credentials !</p>
                 <div class="input-container">
@@ -91,7 +91,7 @@
                 <p id="signup-txt">Don't have an account ? <em> Sign up</em></p>
                 <button id="login-btn" class="auth-btns">Login</button>
             </div>
-            <div class="signup-wrapper">
+            <div id="signup-wrapper">
                 <h1>Signup</h1>
                 <p id="user-exists-error" class="error-message"> User already exists !</p>
                 <div class="input-container">
@@ -120,7 +120,7 @@
                 <button id="signup-btn" class="auth-btns">Sign up</button>
             </div>
         </div>
-        <div class="main-container">
+        <div id="main-container">
             <div id="profile-section">
                 <div id="profile-infos">
                     <h2 id="greeting"></h2>
@@ -192,7 +192,13 @@
 
                 </div>
             </div>
-            <div id="search-section"></div>
+            <div id="search-section">
+                <p>This is not Google. But let's see if we find something...</p>
+                <div class="search-bar-wrapper">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="search" id="search-bar" class="search-ipt">
+                </div>
+            </div>
         </div>
     </div>
 <script type="module" src="main.js"></script>

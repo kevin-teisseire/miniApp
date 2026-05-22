@@ -1,5 +1,5 @@
-import { navBar, authPop, loginWrapper, pageWrapper, forumMessageSection, forumMainSection } from "./dom.js"
 import { show, hide, toggleSections } from "./UI.js"
+import { DOM } from "./dom.js"
 
 
 /* ========================
@@ -7,9 +7,9 @@ import { show, hide, toggleSections } from "./UI.js"
 =========================== */
 
 /* ------ Welcome section ------*/
-show(authPop)
-show(loginWrapper)
-pageWrapper.style.justifyContent = 'center'
+show(DOM.authPop())
+show(DOM.loginWrapper())
+DOM.pageWrapper().style.justifyContent = 'center'
 
 /* ------ Navbar ------ */
 function menuNavigation(event){
@@ -20,7 +20,6 @@ function menuNavigation(event){
     if (!clickedElement) return;
     const selectedMenu = document.getElementById(clickedElement.id);
     const correspondingSection = document.getElementById(clickedElement.dataset.sectionId)
-    //const subSection = document.getElementById(subSections[correspondingSection.id])
     // Highlight selected menu
     menuIdList.forEach(id => {
         const el = document.getElementById(id)
@@ -33,13 +32,16 @@ function menuNavigation(event){
         hide(section)
     })
     show(correspondingSection)
+    // Toggle between forum subsections
     if(correspondingSection.id === "forum-section"){
-        toggleSections([forumMessageSection], [forumMainSection])
+        toggleSections([DOM.forumMessageSection()], [DOM.forumMainSection()])
+    } else if (correspondingSection.id === "search-section"){
+        // 
     }
 }
 
 /* ------ Menu animation ------ */
-navBar.addEventListener("click", (event) => {
+DOM.navBar().addEventListener("click", (event) => {
     menuNavigation(event)
 })
 

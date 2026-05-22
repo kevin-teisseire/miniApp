@@ -1,24 +1,23 @@
-import { loginWrapper, signupWrapper, main, profileSection, profileInfos, navBar, pageWrapper, error_wrongCred,
-        error_userExists, profileMenu, signupBtn, loginBtn, signupTxt, loginTxt, authPop } from "./dom.js";
 import { show, hide, toggleSections, cleanInputs } from "./UI.js";
 import { loadForum, login, signUp } from "./API.js";
 import { renderForum, setForumParam } from "./forum.js";
 import { STATE } from "./state.js";
 import { displayInfos } from "./profile.js";
 import { showMenu, hideMenu } from "./navigation.js";
+import { DOM } from "./dom.js";
 
 /* ========================
         Authentification
 =========================== */
 
 // Login text link to signup
-signupTxt.addEventListener('click', () => {
-    toggleSections([loginWrapper], [signupWrapper]);
+DOM.signupTxt().addEventListener('click', () => {
+    toggleSections([DOM.loginWrapper()], [DOM.signupWrapper()]);
 });
 
 // Signup text to login
-loginTxt.addEventListener('click', () => {
-    toggleSections([signupWrapper], [loginWrapper]);
+DOM.loginTxt().addEventListener('click', () => {
+    toggleSections([DOM.signupWrapper()], [DOM.loginWrapper()]);
 });
 
 // Login 
@@ -42,8 +41,8 @@ async function logUserIn(){
     if (isLoading) return;
     isLoading = true;
     try{
-        const email = document.getElementById('login-email-ipt').value;
-        const password = document.getElementById('login-pw-ipt').value;
+        const email = DOM.loginEmail().value;
+        const password = DOM.loginPassword().value
         // Check infos missing
         if (!email || !password){
             alert("Some fields are missing");
@@ -58,29 +57,29 @@ async function logUserIn(){
             const forumRes = await loadForum(STATE.currentUser["user_id"]);
             setForumParam(forumRes);
             renderForum();
-            toggleSections([authPop], [main, profileSection, profileInfos, navBar]);
-            pageWrapper.style.justifyContent = '';
-            showMenu(profileMenu);
+            toggleSections([DOM.authPop()], [DOM.main(), DOM.profileSection(), DOM.profileInfos(), DOM.navBar()]);
+            DOM.pageWrapper().style.justifyContent = '';
+            showMenu(DOM.profileMenu());
         // User not found in DB
         } else {
-            show(error_wrongCred);
+            show(DOM.error_wrongCred);
         };
     } finally {
         isLoading = false;
     };
 };
 
-loginBtn.addEventListener("click", () => {
+DOM.loginBtn().addEventListener("click", () => {
     logUserIn();
 });
 
 // Signup button
 async function signUserUp(){
     // Save input values
-    const first_name = document.getElementById('first-name-ipt').value;
-    const last_name = document.getElementById('last-name-ipt').value;
-    const email = document.getElementById('signup-email-ipt').value;
-    const password = document.getElementById('signup-pw-ipt').value;
+    const first_name = DOM.firstName().value;
+    const last_name = DOM.lastName().value;
+    const email = DOM.email().value;
+    const password = DOM.signupPassword().value;
     // Check field values
     if (!first_name || !last_name || !email || !password){
         alert("Some fields are missing");
@@ -88,13 +87,13 @@ async function signUserUp(){
         const res = await signUp(first_name, last_name, email, password);
         if (res.data.status === "success"){
             setCurrentUser(res.user);
-            toggleSections([signupWrapper], [loginWrapper]);
+            toggleSections([DOM.signupWrapper()], [DOM.loginWrapper()]);
         } else if (res.data.status === "error" && res.data.message === "user exists"){
-           show(error_userExists);
+           show(DOM.error_userExists());
         };
     };
 };
 
-signupBtn.addEventListener("click", () => {
+DOM.signupBtn().addEventListener("click", () => {
     signUserUp();
 });

@@ -1,10 +1,8 @@
-import { greeting, profileName, profileSurname, profileEmail, profileDescription, profileImage, imgUploader, 
-        modifyImage, modifyDescription, modifyEmail, modifyName, modifySurname, formSubmitBtn, customUploader,
-        cancelBtn, profileModBtn, profileForm, profileInfos, profileSection } from "./dom.js";
 import { show, hide, toggleSections, cleanInputs } from "./UI.js";
 import { setCurrentUser } from "./auth.js";
 import { STATE } from "./state.js";
 import { uploadForm } from "./API.js";
+import { DOM } from "./dom.js";
 
 /* ========================
         Profile
@@ -12,32 +10,32 @@ import { uploadForm } from "./API.js";
 
 export function displayInfos(userObj){
     // Display user infos in inputs
-    greeting.textContent = `Hi ${userObj["first_name"]} !`;
-    profileName.textContent = userObj["first_name"];
-    profileSurname.textContent = userObj["last_name"];
-    profileEmail.textContent = userObj["email"];
-    profileDescription.textContent = userObj["description"];
+    DOM.greeting().textContent = `Hi ${userObj["first_name"]} !`;
+    DOM.profileName().textContent = userObj["first_name"];
+    DOM.profileSurname().textContent = userObj["last_name"];
+    DOM.profileEmail().textContent = userObj["email"];
+    DOM.profileDescription().textContent = userObj["description"];
     if (userObj["image_url"]){
-        profileImage.style.backgroundImage = `url(${userObj["image_url"]})`;
+        DOM.profileImage().style.backgroundImage = `url(${userObj["image_url"]})`;
     } else {
-        profileImage.style.backgroundImage = `url(https://res.cloudinary.com/dndeflndh/image/upload/v1779044690/Capture_d_e%CC%81cran_2026-05-17_a%CC%80_21.04.43_rmc8mm.png)`;
+        DOM.profileImage().style.backgroundImage = `url(https://res.cloudinary.com/dndeflndh/image/upload/v1779044690/Capture_d_e%CC%81cran_2026-05-17_a%CC%80_21.04.43_rmc8mm.png)`;
     };
 };
 
 // Image uploader
-customUploader.addEventListener("click", () => {
-    imgUploader.click();
+DOM.customUploader().addEventListener("click", () => {
+    DOM.imgUploader().click();
 });
 
 let selectedFile = null;
 
 function previewImage(){
     // Preview uploaded image
-    const file = imgUploader.files[0];
+    const file = DOM.imgUploader().files[0];
     selectedFile = file;
     if (file){
         const previewSrc = URL.createObjectURL(file);
-        modifyImage.style.backgroundImage = `url(${previewSrc})`;
+        DOM.modifyImage().style.backgroundImage = `url(${previewSrc})`;
         const img = new Image();
         img.src = previewSrc;
         img.onload = () => {
@@ -46,7 +44,7 @@ function previewImage(){
     };
 };
 
-imgUploader.addEventListener("change", () => {
+DOM.imgUploader().addEventListener("change", () => {
     previewImage();
 });
 
@@ -57,34 +55,34 @@ function createFormData(){
     if (selectedFile){
         formData.append("image", selectedFile);
     };
-    if (modifyDescription.value){
-        formData.append("new_description", modifyDescription.value);
+    if (DOM.modifyDescription().value){
+        formData.append("new_description", DOM.modifyDescription().value);
     };
-    if (modifyEmail.value){
-        formData.append("new_email", modifyEmail.value);;
+    if (DOM.modifyEmail().value){
+        formData.append("new_email", DOM.modifyEmail().value);;
     };
-    if (modifyName.value){
-        formData.append("new_name", modifyName.value);
+    if (DOM.modifyName().value){
+        formData.append("new_name", DOM.modifyName().value);
     };
-    if (modifySurname.value){
-        formData.append("new_surname", modifySurname.value);
+    if (DOM.modifySurname().value){
+        formData.append("new_surname", DOM.modifySurname().value);
     };
     return formData;
 };
 
-formSubmitBtn.addEventListener("click", async (e) => {
+DOM.formSubmitBtn().addEventListener("click", async (e) => {
     e.preventDefault();
     const formData = createFormData();
     const data = await uploadForm(formData);
     setCurrentUser(data);
-    toggleSections([profileForm], [profileSection, profileInfos]);
+    toggleSections([DOM.profileForm()], [DOM.profileSection(), DOM.profileInfos()]);
     displayInfos(STATE.currentUser);
-    cleanInputs([modifyDescription, modifyEmail, modifyName, modifySurname]);
+    cleanInputs([DOM.modifyDescription(), DOM.modifyEmail(), DOM.modifyName(), DOM.modifySurname()]);
 });
 
 // Cancel modifications button
-cancelBtn.addEventListener("click", () => {
-    toggleSections([profileForm], [profileInfos]);
+DOM.cancelBtn().addEventListener("click", () => {
+    toggleSections([DOM.profileForm()], [DOM.profileInfos()]);
 });
 
 // Modify user infos button
@@ -93,17 +91,17 @@ function placeHolderText(input, text){
 };
 
 function profilePlaceholders(user){
-    placeHolderText(modifyName, user["first_name"]);
-    placeHolderText(modifySurname, user["last_name"]);
-    placeHolderText(modifyEmail, user["email"]);
+    placeHolderText(DOM.modifyName(), user["first_name"]);
+    placeHolderText(DOM.modifySurname(), user["last_name"]);
+    placeHolderText(DOM.modifyEmail(), user["email"]);
     if (user["description"]){
-        placeHolderText(modifyDescription, user["description"]);
+        placeHolderText(DOM.modifyDescription(), user["description"]);
     };
-    modifyImage.style.backgroundImage = `url(${user["image_url"]})`;
+    DOM.modifyImage().style.backgroundImage = `url(${user["image_url"]})`;
 };
 
-profileModBtn.addEventListener("click", () => {
-    toggleSections([profileInfos], [profileForm]);
+DOM.profileModBtn().addEventListener("click", () => {
+    toggleSections([DOM.profileInfos()], [DOM.profileForm()]);
     // Get stored user data 
     // Add values for input placeholders
     profilePlaceholders(STATE.currentUser);

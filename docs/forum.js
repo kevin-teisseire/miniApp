@@ -1,16 +1,9 @@
 
-import { forumBody, postNavPages, postStatusMessage, newPostTitle, newPostDescription, newPostPopup, createNewPostBtn,
-        sendNewPostBtn, cancelNewPostBtn, forumNextBtn, forumPrevBtn, checkProfilePopup, cancelCheckBtn,
-        messageSection,forumSection,forumMessageSection, forumMainSection, messagesPostTitle, 
-        messagesPostDescription, checkProfileLastName, checkProfileDescription, checkProfileEmail, 
-        checkProfileName, checkImage,
-        ogPostLikeCounter,
-        ogPostMessageCounter,
-        ogPostLikeBtn} from "./dom.js";
 import { show, hide, toggleSections, cleanInputs } from "./UI.js";
 import { getAnswers, loadForum, post } from "./API.js";
 import { STATE } from "./state.js";
-import { renderAnswers, renderLikeIcn, toggleFocusedPostAnswers } from "./answers.js"
+import { renderAnswers, renderLikeIcn, toggleFocusedPostAnswers } from "./answers.js";
+import { DOM } from "./dom.js";
 
 
 /* ========================
@@ -24,7 +17,7 @@ function createForumPostsHtml(element) {
     post.classList.add("large-card");
     post.id = "post";
     post.dataset.postId = element.post_details.id // Saving post id for later
-    forumBody.appendChild(post);
+    DOM.forumBody().appendChild(post);
 
     // Left card side
     const postBodyLeft = document.createElement("div");
@@ -132,7 +125,7 @@ export function setForumParam(res) {
 
 export function renderForum() {
     // Reset html
-    forumBody.innerHTML = '';
+    DOM.forumBody().innerHTML = '';
     // Divide post display 4x4
     const start = (STATE.forumPage - 1) * 4;
     const end = STATE.forumPage * 4;
@@ -144,48 +137,49 @@ export function renderForum() {
             createForumPostsHtml(el);
         });
         // Display current and max page
-        postNavPages.textContent = `${STATE.forumPage} / ${Math.ceil(STATE.forumTotalPages)}`;
+        DOM.postNavPages().textContent = `${STATE.forumPage} / ${Math.ceil(STATE.forumTotalPages)}`;
     } else {
-        postStatusMessage.textContent = 'No post in this forum yet';
+        DOM.postStatusMessage().textContent = 'No post in this forum yet';
     };
 };
 
 
 // Send a new post button
-createNewPostBtn.addEventListener("click", () => {
-    show(newPostPopup);
+DOM.createNewPostBtn().addEventListener("click", () => {
+    show(DOM.newPostPopup());
     const cardCover = document.querySelectorAll('.post-body-right')
     cardCover.forEach(el => hide(el))
+    DOM.newPostTitle().focus()
 });
 
-sendNewPostBtn.addEventListener("click", async () => {
-    const newPost = await post(newPostTitle.value, newPostDescription.value, STATE.currentUser["user_id"]);
+DOM.sendNewPostBtn().addEventListener("click", async () => {
+    const newPost = await post(DOM.newPostTitle().value, DOM.newPostDescription().value, STATE.currentUser["user_id"]);
     const forumRes = await loadForum(STATE.currentUser["user_id"]);
     setForumParam(forumRes);
     renderForum();
     displayPostStatusMessage(newPost.status);
-    toggleSections([newPostPopup], [postStatusMessage]);
-    cleanInputs([newPostDescription, newPostTitle]);
+    toggleSections([DOM.newPostPopup()], [DOM.postStatusMessage()]);
+    cleanInputs([DOM.newPostDescription(), DOM.newPostTitle()]);
     const cardCover = document.querySelectorAll('.post-body-right')
     cardCover.forEach(el => show(el))
 });
 
-cancelNewPostBtn.addEventListener("click", async () => {
-    toggleSections([newPostPopup], [postStatusMessage]);
-    cleanInputs([newPostDescription, newPostTitle]);
+DOM.cancelNewPostBtn().addEventListener("click", async () => {
+    toggleSections([DOM.newPostPopup()], [DOM.postStatusMessage()]);
+    cleanInputs([newPostDescription, DOM.newPostTitle()]);
     const cardCover = document.querySelectorAll('.post-body-right')
     cardCover.forEach(el => show(el))
 });
 
 // Forum pages navigation
-forumNextBtn.addEventListener("click", async () => {
+DOM.forumNextBtn().addEventListener("click", async () => {
     if (STATE.forumPage < STATE.forumTotalPages) {
         STATE.forumPage++;
     };
     renderForum();
 });
 
-forumPrevBtn.addEventListener("click", async () => {
+DOM.forumPrevBtn().addEventListener("click", async () => {
     if (STATE.forumPage > 1) {
         STATE.forumPage--;
     };
@@ -196,27 +190,27 @@ forumPrevBtn.addEventListener("click", async () => {
 // Display new post validation message
 async function displayPostStatusMessage(status) {
     if (status === "success") {
-        postStatusMessage.style.color = 'green';
-        postStatusMessage.textContent = 'Post sent succesfully';
+        DOM.postStatusMessage().style.color = 'green';
+        DOM.postStatusMessage.textContent = 'Post sent succesfully';
     } else {
-        postStatusMessage.style.color = 'red';
-        postStatusMessage.textContent = 'Error : Post not sent';
+        DOM.postStatusMessage().style.color = 'red';
+        DOM.postStatusMessage().textContent = 'Error : Post not sent';
     };
     setTimeout(() => {
-        postStatusMessage.textContent = '';
+        DOM.postStatusMessage().textContent = '';
     }, 2000);
 };
 
 // Check profile pop up
 
 function displayCheckProfileInfos(user){
-    checkProfileLastName.textContent = user.last_name;
-    checkProfileDescription.textContent = user.description;
-    checkProfileEmail.textContent = user.email;
-    checkProfileName.textContent = user.first_name;
-    checkImage.style.background = `url(${user.image_url})`;
-    checkImage.style.backgroundSize = 'cover';
-    checkImage.style.backgroundPosition = 'center';
+    DOM.checkProfileLastName().textContent = user.last_name;
+    DOM.checkProfileDescription().textContent = user.description;
+    DOM.checkProfileEmail().textContent = user.email;
+    DOM.checkProfileName().textContent = user.first_name;
+    DOM.checkImage().style.background = `url(${user.image_url})`;
+    DOM.checkImage().style.backgroundSize = 'cover';
+    DOM.checkImage().style.backgroundPosition = 'center';
 
 }
 // Check for click on forum-post profile image
@@ -227,7 +221,7 @@ document.body.addEventListener("click", (e) => {
         e.target.id === "post-user-name" ||
         e.target.id === "post-date"
     ){
-        show(checkProfilePopup)
+        show(DOM.checkProfilePopup())
         const cardCover = document.querySelectorAll('.post-body-right')
         cardCover.forEach(el => hide(el))
     }
@@ -249,8 +243,8 @@ document.body.addEventListener("click", async (e) => {
         STATE.messages = messageList
         // Did user like ? 
         if (messageList.liked_by_user === true){
-            ogPostLikeBtn.classList.remove("fa-regular")
-            ogPostLikeBtn.classList.add("fa-solid")
+            DOM.ogPostLikeBtn().classList.remove("fa-regular")
+            DOM.ogPostLikeBtn().classList.add("fa-solid")
         }
         // Inject content of focused post in existing HTML
         renderFocusedPost(STATE.clickedPost)
@@ -259,12 +253,12 @@ document.body.addEventListener("click", async (e) => {
         // Did user like this post ? 
         renderLikeIcn()
         // Toggle sections
-        toggleSections([forumMainSection], [forumMessageSection])
+        toggleSections([DOM.forumMainSection()], [DOM.forumMessageSection()])
     }
 })
 
-cancelCheckBtn.addEventListener("click", () => {
-    hide(checkProfilePopup)
+DOM.cancelCheckBtn().addEventListener("click", () => {
+    hide(DOM.checkProfilePopup())
     const cardCover = document.querySelectorAll('.post-body-right')
     cardCover.forEach(el => show(el))
 })
@@ -279,13 +273,13 @@ document.body.addEventListener("click", (e) => {
 
 function renderFocusedPost(post){
     // Display post title
-    messagesPostTitle.textContent = post.post_details.title
+    DOM.messagesPostTitle().textContent = post.post_details.title
     // Display post description
-    messagesPostDescription.textContent = post.post_details.description
+    DOM.messagesPostDescription().textContent = post.post_details.description
     // Display answer count
-    ogPostMessageCounter.textContent = post.post_details.answers
+    DOM.ogPostMessageCounter().textContent = post.post_details.answers
     // Display like count on post
-    ogPostLikeCounter.textContent = post.post_details.likes
+    DOM.ogPostLikeCounter().textContent = post.post_details.likes
     // Did user answer ?
     toggleFocusedPostAnswers("load")
  

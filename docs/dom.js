@@ -1,3 +1,87 @@
+const get = (id) => document.getElementById(id)
+
+export const DOM = {
+    signupTxt: () => get('signup-txt'),
+    loginTxt : () => get('login-txt'),
+    loginWrapper: () => get('login-wrapper'),
+    signupWrapper: () => get('signup-wrapper'),
+    signupBtn: () => get('signup-btn'),
+    loginBtn: () => get('login-btn'),
+    error_userExists: () => get('user-exists-error'),
+    error_wrongCred: () => get('wrong-cred-error'),
+    authPop: () => get('auth-popup'),
+    profileInfos: () => get('profile-infos'),
+    profileForm: () => get('profile-modify-form'),
+    profileSection: () => get('profile-section'),
+    forumSection: () => get('forum-section'),
+    forumMainSection: () => get('forum-main-section'),
+    forumMessageSection: () => get('forum-message-section'),
+    searchSection: () => get('search-section'),
+    profileModBtn: () => get('profile-modify-btn'),
+    formSubmitBtn: () => get('form-submit-btn'),
+    profileDescription: () => get('profile-description'),
+    profileName: () => get('profile-form-name'),
+    profileSurname: () => get('profile-form-surname'),
+    profileEmail: () => get('profile-form-email'),
+    profileImage: () => get('profile-img'),
+    greeting: () => get('greeting'),
+    imgUploader: () => get('profil-img-uploader'),
+    modifyImage: () => get('modify-profile-img'),
+    modifyName: () => get('modify-profile-form-name'),
+    modifySurname: () => get('modify-profile-form-surname'),
+    modifyDescription:() => get('modify-profile-form-description'),
+    modifyEmail: () => get('modify-profile-form-email'),
+    cancelBtn: () => get('form-cancel-btn'),
+    customUploader: () => get('custom-uploader'),
+    profileMenu: () => get('nav-profile'),
+    searchMenu: () => get('nav-search'),
+    forumMenu: () => get('nav-forum'),
+    navBar: () => get('navbar'),
+    main: () => get('main-container'),
+    forumBody :() => get('forum-body'),
+    sendNewPostBtn: () => get('send-new-post-btn'),
+    cancelNewPostBtn :() => get('cancel-new-post-btn'),
+    newPostPopup: () => get('new-post-popup'),
+    postStatusMessage: () => get('post-status-message'),
+    createNewPostBtn :() => get('create-new-post-btn'),
+    pageWrapper: () => get('page-wrapper'),
+    postNavPages: () => get('post-nav-pages'),
+    forumNextBtn: () => get('forum-next-btn'),
+    forumPrevBtn: () => get('forum-prev-btn'),
+    newPostTitle: () => get('new-post-title-input'),
+    newPostDescription: () => get('new-post-description-input,'),
+    checkProfilePopup: () => get('check-profile-popup'),
+    cancelCheckBtn: () => get('check-profile_close-btn'),
+    messageSection: () => get('message-section'),
+    messageBackBtn: () => get('message_back-btn'),
+    ogPostAnswerBtn: () => get('original-post-answer-btn'),
+    likeBtn: () => get('like-btn'),
+    answerPopup: () => get('answer-message-popup'),
+    closeAnswerBtn: () => get('close-answer-btn'),
+    messageBody: () => get('message-body'),
+    sendAnswerBtn: () => get('send-answer-btn'),
+    messagesPostTitle: () => get('messages_post-title'), 
+    messagesPostDescription: () => get('messages_post-description'), 
+    checkProfileName: () => get('check-profile_profile-name'),
+    checkProfileLastName: () => get('check-profile_last-name'),
+    checkProfileEmail: () => get('check-profile_profile-email'),
+    checkProfileDescription: () => get('check-profile_profile-description'),
+    checkImage: () => get('check-profile-img'),
+    answerContainer: () => get('answer-container'),
+    ogPostMessageCounter: () => get('original-post-message-count'),
+    ogPostLikeCounter: () => get('original-post-like-count'),
+    ogPostLikeBtn: () => get('original-post-like-btn'),
+    loginEmail: () => get('login-email-ipt'),
+    loginPassword: () => get('login-pw-ipt'),
+    firstName: () => get('first-name-ipt'),
+    lastName: () => get('last-name-ipt'),
+    signupEmail: () => get('signup-email-ipt'),
+    signupPassword: () => get('signup-pw-ipt')    
+}
+
+window.DOM = DOM
+
+/*
 export const signupTxt = document.getElementById('signup-txt')
 export const loginTxt = document.getElementById('login-txt')
 export const loginWrapper = document.querySelector('.login-wrapper')
@@ -69,15 +153,7 @@ export const ogPostMessageCounter = document.getElementById('original-post-messa
 export const ogPostLikeCounter = document.getElementById('original-post-like-count');
 export const ogPostLikeBtn = document.getElementById('original-post-like-btn');
 
-
-
-
-
-
-
-
-
-
+*/
 
 
 

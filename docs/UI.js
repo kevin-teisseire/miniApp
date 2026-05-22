@@ -4,6 +4,7 @@
 
 export const show = (...el) => {
     el.forEach(el => {
+        if (!el) return
         el.style.display = 'flex';
         el.style.opacity = 1;
     });
@@ -11,6 +12,7 @@ export const show = (...el) => {
 
 export const hide = (...el) => {
     el.forEach(el => {
+        if (!el) return
         el.style.display = 'none';
         el.style.opacity = 0;
     });

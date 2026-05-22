@@ -1,43 +1,44 @@
 import { decreaseLikes, getAnswers, increaseLikes, postAnswer, loadForum } from "./API.js";
-import { answerPopup, closeAnswerBtn, forumMainSection, forumMessageSection, messageBackBtn, messageBody, answerContainer, sendAnswerBtn, ogPostMessageCounter, ogPostLikeCounter, ogPostAnswerBtn, ogPostLikeBtn } from "./dom.js";
 import { cleanInputs, show, hide, toggleSections } from "./UI.js";
 import { STATE } from "./state.js";
-import { renderForum, setForumParam } from "./forum.js";
+import { renderForum, setForumParam } from "./forum.js"; 
+import { DOM } from "./dom.js";
 
-messageBackBtn.addEventListener("click", async () => {
+DOM.messageBackBtn().addEventListener("click", async () => {
     const forumRes = await loadForum(STATE.currentUser["user_id"]);
     setForumParam(forumRes);
     renderForum()
-    toggleSections([forumMessageSection], [forumMainSection])
+    toggleSections([DOM.forumMessageSection()], [DOM.forumMainSection()])
 })
 
-ogPostAnswerBtn.addEventListener("click", (e) => {
-    show(answerPopup)
+DOM.ogPostAnswerBtn().addEventListener("click", (e) => {
+    show(DOM.answerPopup())
+    DOM.messageBody().focus()
 })
 
-closeAnswerBtn.addEventListener("click", () => {
-    hide(answerPopup)
-    cleanInputs([messageBody])
+DOM.closeAnswerBtn().addEventListener("click", () => {
+    hide(DOM.answerPopup())
+    cleanInputs([DOM.messageBody()])
 })
 
-sendAnswerBtn.addEventListener("click", async () => {
+DOM.sendAnswerBtn().addEventListener("click", async () => {
     // Save message sent in DB
     await postAnswer(
-        messageBody.value,
+        DOM.messageBody().value,
         STATE.clickedPost.post_details.id, 
         STATE.currentUser.user_id
     )
     // Update answer list
     const res = await getAnswers(STATE.clickedPost.post_details.id, STATE.currentUser.user_id)
     renderAnswers(res) 
-    hide(answerPopup)
-    cleanInputs([messageBody])
+    hide(DOM.answerPopup())
+    cleanInputs([DOM.messageBody()])
     toggleFocusedPostAnswers("add")
 })
 
 export function renderAnswers(data){
      // Reset HTML
-    answerContainer.innerHTML = ``;
+    DOM.answerContainer().innerHTML = ``;
     // If no answer sent abord the forEach
     if (data.status === "error") return
     // Create answers in html
@@ -45,7 +46,7 @@ export function renderAnswers(data){
         // Card
         const answerCard = document.createElement('div')
         answerCard.classList.add("answer-card")
-        answerContainer.appendChild(answerCard)
+        DOM.answerContainer().appendChild(answerCard)
         // Lef side
         const answerBodyLeft = document.createElement('div')
         answerBodyLeft.classList.add("answer-body-left")
@@ -89,7 +90,7 @@ export function renderAnswers(data){
 }
 
 // Increase likes 
-ogPostLikeBtn.addEventListener("click", async () => {
+DOM.ogPostLikeBtn().addEventListener("click", async () => {
     clickLikeBtn()
     
 })
@@ -97,41 +98,41 @@ ogPostLikeBtn.addEventListener("click", async () => {
 
 async function clickLikeBtn(){
       if (!STATE.messages.liked_by_user){
-        ogPostLikeCounter.textContent++
+        DOM.ogPostLikeCounter().textContent++
         await increaseLikes(STATE.clickedPost.post_details.id, STATE.currentUser.user_id)
-        ogPostLikeBtn.classList.remove("fa-regular")
-        ogPostLikeBtn.classList.add("fa-solid")
+        DOM.ogPostLikeBtn().classList.remove("fa-regular")
+        DOM.ogPostLikeBtn().classList.add("fa-solid")
         STATE.messages.liked_by_user = true
     } else {
         await decreaseLikes(STATE.clickedPost.post_details.id, STATE.currentUser.user_id)
-        ogPostLikeBtn.classList.remove("fa-solid")
-        ogPostLikeBtn.classList.add("fa-regular")
+        DOM.ogPostLikeBtn().classList.remove("fa-solid")
+        DOM.ogPostLikeBtn().classList.add("fa-regular")
         STATE.messages.liked_by_user = false
-        ogPostLikeCounter.textContent--
+        DOM.ogPostLikeCounter().textContent--
     }
 }
 
 export function renderLikeIcn(){
     if (!STATE.clickedPost.post_details.liked_by_user){
-        ogPostLikeBtn.classList.remove("fa-solid")
-        ogPostLikeBtn.classList.add("fa-regular")
+        DOM.ogPostLikeBtn().classList.remove("fa-solid")
+        DOM.ogPostLikeBtn().classList.add("fa-regular")
     } else {
-        ogPostLikeBtn.classList.remove("fa-regular")
-        ogPostLikeBtn.classList.add("fa-solid")
+        DOM.ogPostLikeBtn().classList.remove("fa-regular")
+        DOM.ogPostLikeBtn().classList.add("fa-solid")
     }
 }
 
 
 export function toggleFocusedPostAnswers(path){
     if (path === "add"){
-        ogPostMessageCounter.textContent++
+        DOM.ogPostMessageCounter().textContent++
         STATE.clickedPost.post_details.answered_by_user = true
     }
     if (!STATE.clickedPost.post_details.answered_by_user){
-        ogPostAnswerBtn.classList.remove("fa-solid")
-        ogPostAnswerBtn.classList.add("fa-regular")
+        DOM.ogPostAnswerBtn().classList.remove("fa-solid")
+        DOM.ogPostAnswerBtn().classList.add("fa-regular")
     } else {
-        ogPostAnswerBtn.classList.remove("fa-regular")
-        ogPostAnswerBtn.classList.add("fa-solid")
+        DOM.ogPostAnswerBtn().classList.remove("fa-regular")
+        DOM.ogPostAnswerBtn().classList.add("fa-solid")
     }
 };
