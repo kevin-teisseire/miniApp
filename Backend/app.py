@@ -68,6 +68,7 @@ def initDB():
     conn.close()
 
 def fetch_all_posts(cursor, user_id):
+    "Get existing post list, post creators, check if user liked or answered"
     cursor.execute("""
         SELECT forum_posts.id AS post_id, 
         forum_posts.title,
@@ -100,7 +101,9 @@ def fetch_all_posts(cursor, user_id):
         GROUP BY forum_posts.id, users.id
         ORDER BY forum_posts.created_at DESC;
     """, (user_id, user_id))
+
     rows = cursor.fetchall()
+
     return [{
         "post_details": {
             "id": p["post_id"],
@@ -122,6 +125,13 @@ def fetch_all_posts(cursor, user_id):
         }       
     } for p in rows]
 
+def getDB():
+    "establish connexion to database"
+    return psycopg2.connect(
+        os.getenv("DATABASE_URL"),
+        sslmode="require",
+        connect_timeout = 10
+    )
 
 # ====== Routes ======
 
@@ -144,19 +154,19 @@ def signup():
         email = data.get("email")
         image_url = "https://res.cloudinary.com/dndeflndh/image/upload/v1779044690/Capture_d_e%CC%81cran_2026-05-17_a%CC%80_21.04.43_rmc8mm.png"
         password = data.get("password").encode("utf-8")
+        # Encrypt password
         hashed_pw = bcrypt.hashpw(password, bcrypt.gensalt())
 
-        conn = psycopg2.connect(
-        os.getenv("DATABASE_URL"),
-        sslmode="require", 
-        connect_timeout = 10
-        )
+        # Establish connexion with DB
+        conn = getDB()
         cursor = conn.cursor()
+
         # Check if user exists
         cursor.execute(
             "SELECT 1 FROM users WHERE email = %s", (email,)
         )
         existingUser = cursor.fetchone()
+        # Create user if not exists
         if not existingUser:
             cursor.execute(
                 "INSERT INTO users (first_name, last_name, email, password, image_url) VALUES (%s, %s, %s, %s, %s)", (first_name, last_name, email, hashed_pw.decode("utf-8"), image_url)
@@ -168,11 +178,13 @@ def signup():
                 "message": "user created",
                 "user_id": user_id
             }), 201
+        # return error if user exists
         else:
             return jsonify({
                 "status": "error",
                 "message": "user exists"
             }), 400
+    # Return and log error if something went wrong
     except Exception as e:
         return jsonify({
             "status": "error",
@@ -191,11 +203,7 @@ def login():
     email = req.get("email")
     password = req.get("password")
     # Connect to DB
-    conn = psycopg2.connect(
-        os.getenv("DATABASE_URL"),
-        sslmode="require",
-        connect_timeout = 10
-        )
+    conn = getDB()
     cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     # Get user
     cursor.execute(
@@ -235,11 +243,7 @@ def upload():
     new_surname = request.form.get("new_surname")
     new_email = request.form.get("new_email")
     # Connect to DB
-    conn = psycopg2.connect(
-        os.getenv("DATABASE_URL"),
-        sslmode="require",
-        connect_timeout = 10
-        )
+    conn = getDB()
     # Format DB response 
     cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     # Check for new data
@@ -292,11 +296,7 @@ def uploaded_file(filename):
 def getMessages():
     conn = None
     try:
-        conn = psycopg2.connect(
-            os.getenv("DATABASE_URL"),
-            sslmode="require",
-            connect_timeout = 10
-            )
+        conn = getDB()
         cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
         user_id = request.args.get("user_id")
         posts = fetch_all_posts(cursor, user_id)
@@ -320,12 +320,9 @@ def getMessages():
 @app.route("/post", methods=["POST"])
 
 def post():
-    conn = psycopg2.connect(
-        os.getenv("DATABASE_URL"),
-        sslmode="require",
-        connect_timeout = 10
-        )
-    cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    "save a new post"
+    conn = getDB()
+    cursor = conn.cursor()
     req = request.get_json()
     title = req.get("title")
     description = req.get("description")
@@ -348,12 +345,9 @@ def post():
 @app.route("/send-answer", methods=["POST"])
 
 def sendAnswer():
-    conn = psycopg2.connect(
-        os.getenv("DATABASE_URL"),
-        sslmode = "require",
-        connect_timeout = 10
-    )
-    cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    "save an answer to a post"
+    conn = getDB()
+    cursor = conn.cursor()
     req = request.get_json()
     post_id = req.get("post_id")
     message = req.get("message")
@@ -373,11 +367,8 @@ def sendAnswer():
 @app.route("/get-answers", methods=["GET"])
 
 def getAnswers():
-    conn = psycopg2.connect(
-        os.getenv("DATABASE_URL"),
-        sslmode = "require",
-        connect_timeout = 10
-    ) 
+    "load answers to a post"
+    conn = getDB()
     cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     post_id = request.args.get("post_id")
     user_id = request.args.get("user_id")
@@ -437,11 +428,8 @@ def getAnswers():
 @app.route("/increase-likes", methods=["POST"])
 
 def increase_likes():
-    conn = psycopg2.connect(
-        os.getenv("DATABASE_URL"),
-        sslmode = "require",
-        connect_timeout = 10
-    )
+    "increase like count for a post"
+    conn = getDB()
     cursor = conn.cursor()
     req = request.get_json()
     post_id = req["post_id"]
@@ -457,11 +445,8 @@ def increase_likes():
 @app.route("/decrease-likes", methods=["POST"])
 
 def decrease_likes():
-    conn = psycopg2.connect(
-        os.getenv("DATABASE_URL"),
-        sslmode = "require",
-        connect_timeout = 10
-    )
+    "decrease like count for a post"
+    conn = getDB()
     cursor = conn.cursor()
     req = request.get_json()
     post_id = req["post_id"]
@@ -479,21 +464,23 @@ def decrease_likes():
 @app.route("/search-posts", methods=["GET"])
 
 def search_posts():
-    conn = psycopg2.connect(
-        os.getenv("DATABASE_URL"),
-        sslmode = "require",
-        connect_timeout = 10
-    )
-    cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    "Search for existing post matching user query"
+    conn = getDB()
+    # Define cursor
+    cursor = conn.cursor()
+    # Get query from request
     query = request.args.get("user_query")
+    # Query DB with parameters
     cursor.execute("""
         SELECT * FROM forum_posts 
         WHERE title ILIKE %s
         OR content ILIKE %s
         ORDER BY created_at DESC
     """, (f"%{query}%", f"%{query}%"))
+    # Save results
     matching_posts = cursor.fetchall()
     conn.close()
+    # Return response
     return jsonify({
         "status": "success",
         "message": "results loaded",
