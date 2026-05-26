@@ -78,6 +78,7 @@ export async function loadForum(user_id){
 /* ------ Forum ------ */
 
 export async function post(title, description, user_id){
+    console.log(user_id)
     const res = await fetch(`${API_URL}/post`, {
         method: "POST",
         headers: {

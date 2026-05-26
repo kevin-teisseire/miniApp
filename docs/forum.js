@@ -67,7 +67,8 @@ function createForumPostsHtml(element) {
     const postDescription = document.createElement("p");
     postDescription.classList.add("body-text-small");
     postDescription.id = "post-description";
-    postDescription.textContent = element.post_details.description;
+    const text = truncateText(element.post_details.description)
+    postDescription.textContent = text;
     postBodyRight.appendChild(postDescription);
 
     /* ------ Social icns ------ */
@@ -115,7 +116,7 @@ function createForumPostsHtml(element) {
 }
 
 // Render forum 
-export function setForumParam(res) {
+export function setForumParam(res){
     Object.assign(STATE, {
         forumTotalPages: res.total_pages,
         forumPosts: res.posts,
@@ -123,7 +124,17 @@ export function setForumParam(res) {
     });
 };
 
-export function renderForum() {
+// Truncate post description if text is too long
+function truncateText(text){
+    const string = String(text)
+    const maxLength = 150;
+    if (string.length > maxLength){
+        return string.slice(0, maxLength) + "...";
+    }
+    return string
+};
+
+export function renderForum(){
     // Reset html
     DOM.forumBody().innerHTML = '';
     // Divide post display 4x4
@@ -162,11 +173,11 @@ DOM.sendNewPostBtn().addEventListener("click", async () => {
     cleanInputs([DOM.newPostDescription(), DOM.newPostTitle()]);
     const cardCover = document.querySelectorAll('.post-body-right')
     cardCover.forEach(el => show(el))
-});
+}); 
 
 DOM.cancelNewPostBtn().addEventListener("click", async () => {
-    toggleSections([DOM.newPostPopup()], [DOM.postStatusMessage()]);
-    cleanInputs([newPostDescription, DOM.newPostTitle()]);
+    hide(DOM.newPostPopup());
+    cleanInputs([DOM.newPostDescription(), DOM.newPostTitle()]);
     const cardCover = document.querySelectorAll('.post-body-right')
     cardCover.forEach(el => show(el))
 });

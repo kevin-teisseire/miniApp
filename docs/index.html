@@ -23,8 +23,8 @@
                 </div>
             </div>
            <div class="flex-row-center">
-                <button id="send-new-post-btn" class="auth-btns">Send</button>
-                <button id="cancel-new-post-btn" class="auth-btns">Cancel</button>
+                <button id="send-new-post-btn" class="auth-btns validate">Send</button>
+                <button id="cancel-new-post-btn" class="auth-btns cancel">Cancel</button>
             </div>
         </div>
     </div>
@@ -47,7 +47,7 @@
                 </div>
             </div>
            <div class="flex-row-center">
-                <button id="check-profile_close-btn" class="auth-btns">Close</button>
+                <button id="check-profile_close-btn" class="auth-btns cancel">Close</button>
             </div>
         </div>
     </div>
@@ -61,8 +61,8 @@
                 </div>
             </div>
            <div class="flex-row-center">
-                <button id="send-answer-btn" class="auth-btns">Send</button>
-                <button id="close-answer-btn" class="auth-btns">Close</button>
+                <button id="send-answer-btn" class="auth-btns validate">Send</button>
+                <button id="close-answer-btn" class="auth-btns cancel">Close</button>
             </div>
         </div>
     </div>
@@ -87,9 +87,10 @@
                         <p>Passsword</p>
                         <input id="login-pw-ipt" type="password">
                     </div>
+                    <p id="signup-txt">Don't have an account ? <em> Sign up</em></p>   
                 </div>
-                <p id="signup-txt">Don't have an account ? <em> Sign up</em></p>
-                <button id="login-btn" class="auth-btns">Login</button>
+                
+                <button id="login-btn" class="auth-btns validate">Login</button>
             </div>
             <div id="signup-wrapper">
                 <h1>Signup</h1>
@@ -117,54 +118,71 @@
                     </div>
                 </div>
                 <p id="login-txt">Already have an account ? <em>log in</em></p>
-                <button id="signup-btn" class="auth-btns">Sign up</button>
+                <button id="signup-btn" class="auth-btns validate">Sign up</button>
             </div>
         </div>
         <div id="main-container">
             <div id="profile-section">
                 <div id="profile-infos">
                     <h2 id="greeting"></h2>
-                    <div class="infos-body">
-                        <div class="profile-image" id="profile-img"></div>
-                        <h3>First name</h3>
-                        <p id="profile-form-name"></p>
-                        <h3>Last name</h3>
-                        <p id="profile-form-surname"></p>
-                        <h3>Email</h3>
-                        <p id="profile-form-email"></p>
-                        <h3>Description</h3>
-                        <p id="profile-description">Add a description to your profile</p>
+                    <div class="profile-image" id="profile-img"></div>
+                    <div class="infos-body">                
+                        <div class="input-wrapper">
+                            <h3 class="info-title">First name</h3>
+                            <p id="profile-form-name" class="info-text"></p>
+                        </div>
+                        <div class="input-wrapper">
+                            <h3 class="info-title">Last name</h3>
+                            <p id="profile-form-surname" class="info-text"></p>
+                        </div>
+                        <div class="input-wrapper">
+                            <h3 class="info-title">Email</h3>
+                            <p id="profile-form-email" class="info-text"></p>
+                        </div>
+                        <div class="input-wrapper">
+                            <h3 class="info-title">Description</h3>
+                            <p id="profile-description" class="info-text">Add a description to your profile</p>
+                        </div>
                     </div>
-                    <button id="profile-modify-btn" class="auth-btns">Modify</button>
+                    <button id="profile-modify-btn" class="auth-btns validate">Modify</button>
                 </div>
                 <div id="profile-modify-form">
-                    <label for="modify-profile-img" class="modify-img-label">Image</label>
+                    <div class="input-wrapper">
                         <div class="profile-image" id="modify-profile-img"></div>
                         <input type="file" placeholder="Upload image" id="profil-img-uploader" hidden>
                         <div id="custom-uploader">Upload</div>
-                    <label for="modify-profile-form-name">First name</label>
+                    </div>
+                    <div class="input-wrapper">
+                        <label for="modify-profile-form-name">First name</label>
                         <input id="modify-profile-form-name" type="text">
-                    <label for="modify-profile-form-surname">Last name</label>
+                    </div>
+                    <div class="input-wrapper">
+                        <label for="modify-profile-form-surname">Last name</label>
                         <input id="modify-profile-form-surname" type="text">
-                    <label for="modify-profile-form-email">Email</label>
+                    </div>
+                    <div class="input-wrapper">
+                        <label for="modify-profile-form-email">Email</label>
                         <input id="modify-profile-form-email" type="text">
-                    <label for="modify-profile-form-description">Description</label>
+                    </div>
+                    <div class="input-wrapper">
+                        <label for="modify-profile-form-description">Description</label>
                         <textarea id="modify-profile-form-description" class="profile-multi-input"></textarea>
+                    </div>
                     <div class="flex-row-btns">
-                        <button type="button" id="form-submit-btn" class="auth-btns">Save</button>
-                        <button type="button" id="form-cancel-btn" class="auth-btns">Cancel</button>
+                        <button type="button" id="form-submit-btn" class="auth-btns validate">Save</button>
+                        <button type="button" id="form-cancel-btn" class="auth-btns cancel">Cancel</button>
                     </div>
                 </div>
             </div>
             <div id="forum-section">
                 <div id="forum-main-section">
-                    <button id="create-new-post-btn" class="auth-btns">New post</button>
+                    <button id="create-new-post-btn" class="auth-btns validate">New post</button>
 
                     <div id="forum-error">
                         <h3 id="post-status-message" class="status-message"></h3>
                     </div>
                     <div id="forum-body"></div>
-                    <div class="flex-row-center">
+                    <div class="flex-row-center forum-nav">
                         <i id="forum-prev-btn" class="fa-solid fa-angle-left icn-btn"></i>
                         <p id="post-nav-pages"></p>
                         <i id="forum-next-btn" class="fa-solid fa-angle-right icn-btn"></i>
@@ -188,7 +206,7 @@
                         </div>
                     </div>
                     <div id="answer-container" class="flex-body-container"></div>
-                    <button id="message_back-btn" class="auth-btns">Back</button>
+                    <button id="message_back-btn" class="auth-btns validate">Back</button>
 
                 </div>
             </div>
