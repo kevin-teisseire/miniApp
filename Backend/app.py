@@ -12,9 +12,10 @@ import psycopg2.extras
 import cloudinary
 import cloudinary.uploader
 import traceback
+import bcrypt
 
 load_dotenv()
-
+print("KEY =", os.getenv("CLOUDINARY_API_KEY"))
 cloudinary.config(
     cloud_name = os.getenv("CLOUDINARY_CLOUD_NAME"),
     api_key = os.getenv("CLOUDINARY_API_KEY"),
@@ -142,8 +143,9 @@ def signup():
         first_name = data.get("first_name")
         last_name = data.get("last_name")
         email = data.get("email")
-        password = data.get("password")
         image_url = "https://res.cloudinary.com/dndeflndh/image/upload/v1779044690/Capture_d_e%CC%81cran_2026-05-17_a%CC%80_21.04.43_rmc8mm.png"
+        password = data.get("password").encode("utf-8")
+        hashed_pw = bcrypt.hashpw(password, bcrypt.gensalt())
 
         conn = psycopg2.connect(
         os.getenv("DATABASE_URL"),
@@ -158,7 +160,7 @@ def signup():
         existingUser = cursor.fetchone()
         if not existingUser:
             cursor.execute(
-                "INSERT INTO users (first_name, last_name, email, password, image_url) VALUES (%s, %s, %s, %s, %s)", (first_name, last_name, email, password, image_url)
+                "INSERT INTO users (first_name, last_name, email, password, image_url) VALUES (%s, %s, %s, %s, %s)", (first_name, last_name, email, hashed_pw.decode("utf-8"), image_url)
             )
             user_id = cursor.lastrowid
             conn.commit()
@@ -199,12 +201,12 @@ def login():
     cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     # Get user
     cursor.execute(
-        "SELECT * FROM users WHERE email = %s AND password = %s", (email, password)
+        "SELECT * FROM users WHERE email = %s", (email,)
     )
     user = cursor.fetchone()
     conn.close()
     # Format response
-    if user:
+    if user and bcrypt.checkpw(password.encode("utf-8"), user["password"].encode("utf-8")):
         return jsonify({
             "status": "success",
             "message": "logged in",
@@ -225,6 +227,10 @@ def login():
 @app.route("/upload", methods=["POST"])
 
 def upload():
+    print("upload")
+    print("CLOUDINARY_API_KEY =", os.getenv("CLOUDINARY_API_KEY"))
+    print("CLOUDINARY_CLOUD_NAME =", os.getenv("CLOUDINARY_CLOUD_NAME"))
+    
     # Get new image
     new_image = request.files.get("image")
     # Get user id
@@ -234,6 +240,11 @@ def upload():
     new_name = request.form.get("new_name")
     new_surname = request.form.get("new_surname")
     new_email = request.form.get("new_email")
+
+    print("IMAGE =", new_image)
+    print("TYPE =", type(new_image))
+
+
     # Connect to DB
     conn = psycopg2.connect(
         os.getenv("DATABASE_URL"),

@@ -76,9 +76,9 @@ DOM.loginBtn().addEventListener("click", () => {
 // Signup button
 async function signUserUp(){
     // Save input values
-    const first_name = DOM.firstName().value;
-    const last_name = DOM.lastName().value;
-    const email = DOM.email().value;
+    const first_name = DOM.signupfirstName().value;
+    const last_name = DOM.signuplastName().value;
+    const email = DOM.signupEmail().value;
     const password = DOM.signupPassword().value;
     // Check field values
     if (!first_name || !last_name || !email || !password){

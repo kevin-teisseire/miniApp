@@ -56,7 +56,6 @@ export async function signUp(first_name, last_name, email, password){
 /* ------ Upload profile Form ------ */
 
 export async function uploadForm(formData){
-    // Promise
     const res = await fetch(`${API_URL}/upload`, {
         method: "POST",
         body: formData
