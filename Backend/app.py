@@ -15,7 +15,6 @@ import traceback
 import bcrypt
 
 load_dotenv()
-print("KEY =", os.getenv("CLOUDINARY_API_KEY"))
 cloudinary.config(
     cloud_name = os.getenv("CLOUDINARY_CLOUD_NAME"),
     api_key = os.getenv("CLOUDINARY_API_KEY"),
@@ -175,7 +174,6 @@ def signup():
                 "message": "user exists"
             }), 400
     except Exception as e:
-        print(traceback.format_exc())
         return jsonify({
             "status": "error",
             "message": "server error"
@@ -227,10 +225,6 @@ def login():
 @app.route("/upload", methods=["POST"])
 
 def upload():
-    print("upload")
-    print("CLOUDINARY_API_KEY =", os.getenv("CLOUDINARY_API_KEY"))
-    print("CLOUDINARY_CLOUD_NAME =", os.getenv("CLOUDINARY_CLOUD_NAME"))
-    
     # Get new image
     new_image = request.files.get("image")
     # Get user id
@@ -240,11 +234,6 @@ def upload():
     new_name = request.form.get("new_name")
     new_surname = request.form.get("new_surname")
     new_email = request.form.get("new_email")
-
-    print("IMAGE =", new_image)
-    print("TYPE =", type(new_image))
-
-
     # Connect to DB
     conn = psycopg2.connect(
         os.getenv("DATABASE_URL"),
@@ -311,7 +300,6 @@ def getMessages():
         cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
         user_id = request.args.get("user_id")
         posts = fetch_all_posts(cursor, user_id)
-        print("posts :", posts)
         cursor.execute("SELECT COUNT(*) as total_posts FROM forum_posts")
         result = cursor.fetchone()
         total_posts = result["total_posts"]
@@ -324,7 +312,6 @@ def getMessages():
             "posts": posts
         })
     except Exception:
-        print(traceback.format_exc())
         return jsonify({"status": "error"}), 500
     finally:
         if conn:
@@ -371,7 +358,6 @@ def sendAnswer():
     post_id = req.get("post_id")
     message = req.get("message")
     user_id = req.get("user_id")
-    print('received request. post_id = ', post_id, 'user_id = ', user_id)
     cursor.execute("""
         INSERT INTO user_messages (message, post_id, user_id)
         VALUES (%s, %s, %s)
@@ -500,7 +486,6 @@ def search_posts():
     )
     cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     query = request.args.get("user_query")
-    print(query)
     cursor.execute("""
         SELECT * FROM forum_posts 
         WHERE title ILIKE %s
