@@ -235,7 +235,12 @@ document.body.addEventListener("click", async (e) => {
         if (!postEl) return
         // Save clicked post ID
         const postId = Number(postEl.dataset.postId)
-        // Find corresponding post data saved in state
+        gotoAnswers(postId)
+    }
+})
+
+export async function gotoAnswers(postId){
+    // Find corresponding post data saved in state
         STATE.clickedPost = STATE.forumPosts.find(p => p.post_details.id === postId)
         // Launch fetch to get all answers to this post
         const messageList = await getAnswers(postId, STATE.currentUser.user_id)
@@ -255,7 +260,7 @@ document.body.addEventListener("click", async (e) => {
         // Toggle sections
         toggleSections([DOM.forumMainSection()], [DOM.forumMessageSection()])
     }
-})
+
 
 DOM.cancelCheckBtn().addEventListener("click", () => {
     hide(DOM.checkProfilePopup())

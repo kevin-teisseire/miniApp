@@ -17,6 +17,7 @@ function menuNavigation(event){
     const menuIdList = ['nav-profile', 'nav-search', 'nav-forum']
     const sectionIDs = ['profile-section', 'forum-section', 'search-section']
     const clickedElement = event.target.closest("li");
+    console.log(clickedElement)
     if (!clickedElement) return;
     const selectedMenu = document.getElementById(clickedElement.id);
     const correspondingSection = document.getElementById(clickedElement.dataset.sectionId)
@@ -36,7 +37,8 @@ function menuNavigation(event){
     if(correspondingSection.id === "forum-section"){
         toggleSections([DOM.forumMessageSection()], [DOM.forumMainSection()])
     } else if (correspondingSection.id === "search-section"){
-        // 
+        console.log(true)
+        DOM.searchBar().focus()
     }
 }
 
@@ -54,5 +56,6 @@ export function hideMenu(name){
     name.classList.remove("selected")
     name.classList.add("unselected")
 }
+
 
 

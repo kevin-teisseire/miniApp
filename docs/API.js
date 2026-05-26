@@ -93,6 +93,7 @@ export async function post(title, description, user_id){
     return data;
 };
 
+/* ------ Answers ------ */
 export async function postAnswer(message, post_id, user_id){
     const res = await fetch(`${API_URL}/send-answer`, {
         method: "POST",
@@ -116,6 +117,8 @@ export async function getAnswers(post_id, user_id){
     const data = await res.json()
     return data
 }
+
+/* ------ Like system ------*/
 
 export async function increaseLikes(post_id, user_id){
     const res = await fetch(`${API_URL}/increase-likes`, {
@@ -148,6 +151,15 @@ export async function decreaseLikes(post_id, user_id){
     
 }
 
+/* ------ Search section ------ */
+
+export async function fetchPosts(query){
+    const res = await fetch(`${API_URL}/search-posts?user_query=${query}`, {
+        method: "GET",
+    });
+    const data = await res.json()
+    return data
+};
 
 
 

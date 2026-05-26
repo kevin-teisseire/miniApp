@@ -346,6 +346,7 @@ def post():
         "message": "post created",
     })
 
+# ------ Answer section ------
 @app.route("/send-answer", methods=["POST"])
 
 def sendAnswer():
@@ -434,7 +435,8 @@ def getAnswers():
             "status": "error",
             "message": "empty"
         })
-
+    
+# ------ Like system ------
 @app.route("/increase-likes", methods=["POST"])
 
 def increase_likes():
@@ -475,6 +477,32 @@ def decrease_likes():
         "message": "like deleted"
     })
 
+# ------ Search section ------
+
+@app.route("/search-posts", methods=["GET"])
+
+def search_posts():
+    conn = psycopg2.connect(
+        os.getenv("DATABASE_URL"),
+        sslmode = "require",
+        connect_timeout = 10
+    )
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    query = request.args.get("user_query")
+    print(query)
+    cursor.execute("""
+        SELECT * FROM forum_posts 
+        WHERE title ILIKE %s
+        OR content ILIKE %s
+        ORDER BY created_at DESC
+    """, (f"%{query}%", f"%{query}%"))
+    matching_posts = cursor.fetchall()
+    conn.close()
+    return jsonify({
+        "status": "success",
+        "message": "results loaded",
+        "results": matching_posts
+    })
 
 
 
