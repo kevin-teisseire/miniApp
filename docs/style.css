@@ -210,7 +210,7 @@ em{
     flex-direction: column;
     align-items: center;
     row-gap: 5px;
-    justify-content: space-between;
+    justify-content: flex-start;
     height: 100%;
     width: 100%;
 }
@@ -388,7 +388,7 @@ ul{
     row-gap: 10px;
     width: 100%;
     align-items: center;
-    justify-content: center;
+    padding-top: 10px;
 }
 
 .large-card{
