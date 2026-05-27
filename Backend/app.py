@@ -467,7 +467,7 @@ def search_posts():
     "Search for existing post matching user query"
     conn = getDB()
     # Define cursor
-    cursor = conn.cursor()
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     # Get query from request
     query = request.args.get("user_query")
     # Query DB with parameters

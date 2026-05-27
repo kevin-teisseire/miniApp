@@ -11,3 +11,6 @@ export const STATE = {
     clickedPost: null,
     messages: null,
 };
+
+window.STATE = STATE;
+
