@@ -388,11 +388,10 @@ ul{
     row-gap: 10px;
     width: 100%;
     align-items: center;
-    padding-top: 10px;
 }
 
 .large-card{
-    min-height: 110px;
+    flex:1;
     border: 2px solid var(--border);
     border-radius: 10px;
     width: 80%;
