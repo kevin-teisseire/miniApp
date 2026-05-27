@@ -1,12 +1,12 @@
+/* ========================
+        Profile
+=========================== */
+
 import { show, hide, toggleSections, cleanInputs } from "./UI.js";
 import { setCurrentUser } from "./auth.js";
 import { STATE } from "./state.js";
 import { uploadForm } from "./API.js";
 import { DOM } from "./dom.js";
-
-/* ========================
-        Profile
-=========================== */
 
 export function displayInfos(userObj){
     // Display user infos in inputs
@@ -44,6 +44,7 @@ function previewImage(){
     };
 };
 
+// Preview when image is uploaded
 DOM.imgUploader().addEventListener("change", () => {
     previewImage();
 });
@@ -70,6 +71,7 @@ function createFormData(){
     return formData;
 };
 
+// Submit user profile modification on submit button click
 DOM.formSubmitBtn().addEventListener("click", async (e) => {
     e.preventDefault();
     const formData = createFormData();
@@ -90,6 +92,7 @@ function placeHolderText(input, text){
     input.placeholder = text;
 };
 
+// Display current user details in modify input's placeholders
 function profilePlaceholders(user){
     placeHolderText(DOM.modifyName(), user["first_name"]);
     placeHolderText(DOM.modifySurname(), user["last_name"]);
@@ -100,9 +103,9 @@ function profilePlaceholders(user){
     DOM.modifyImage().style.backgroundImage = `url(${user["image_url"]})`;
 };
 
+// Switch sections to modify infos form
 DOM.profileModBtn().addEventListener("click", () => {
     toggleSections([DOM.profileInfos()], [DOM.profileForm()]);
-    // Get stored user data 
     // Add values for input placeholders
     profilePlaceholders(STATE.currentUser);
 });

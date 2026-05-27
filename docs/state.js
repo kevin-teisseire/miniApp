@@ -10,6 +10,4 @@ export const STATE = {
     forumPostCount: 0,
     clickedPost: null,
     messages: null,
-}
-
-window.STATE = STATE
+};

@@ -1,3 +1,6 @@
+/* ========================
+            Forum
+=========================== */
 
 import { show, hide, toggleSections, cleanInputs } from "./UI.js";
 import { getAnswers, loadForum, post } from "./API.js";
@@ -5,18 +8,13 @@ import { STATE } from "./state.js";
 import { renderAnswers, renderLikeIcn, toggleFocusedPostAnswers } from "./answers.js";
 import { DOM } from "./dom.js";
 
-
-/* ========================
-            Forum
-=========================== */
-
 // Create existing posts HTML
 function createForumPostsHtml(element) {
     // Card container
     const post = document.createElement("div");
     post.classList.add("large-card");
     post.id = "post";
-    post.dataset.postId = element.post_details.id // Saving post id for later
+    post.dataset.postId = element.post_details.id;; // Saving post id for later
     DOM.forumBody().appendChild(post);
 
     // Left card side
@@ -73,49 +71,49 @@ function createForumPostsHtml(element) {
 
     /* ------ Social icns ------ */
     // Icns section wrapper
-    const socialIcnsWrapper = document.createElement("div")
-    socialIcnsWrapper.classList.add("social-icns-wrapper")
-    socialIcnsWrapper.id = "post-socials"
-    postBodyRight.appendChild(socialIcnsWrapper)
+    const socialIcnsWrapper = document.createElement("div");
+    socialIcnsWrapper.classList.add("social-icns-wrapper");
+    socialIcnsWrapper.id = "post-socials";
+    postBodyRight.appendChild(socialIcnsWrapper);
     // Count answers wrapper
-    const countWrapper = document.createElement("div")
-    countWrapper.classList.add("count-icn-wrapper")
-    socialIcnsWrapper.appendChild(countWrapper)
-    socialIcnsWrapper.id = "post-count-wrapper"
+    const countWrapper = document.createElement("div");
+    countWrapper.classList.add("count-icn-wrapper");
+    socialIcnsWrapper.appendChild(countWrapper);
+    socialIcnsWrapper.id = "post-count-wrapper";
     // answer count
-    const answerCount = document.createElement("p")
-    answerCount.textContent = element.post_details.answers
-    countWrapper.appendChild(answerCount)
+    const answerCount = document.createElement("p");
+    answerCount.textContent = element.post_details.answers;
+    countWrapper.appendChild(answerCount);
     // answer Icn
-    const messageIcn = document.createElement("i")
+    const messageIcn = document.createElement("i");
     // Is post answered by user ? 
     if(!element.post_details.answered_by_user){
-        messageIcn.classList.add("fa-regular", "fa-message",  "message-btns")
+        messageIcn.classList.add("fa-regular", "fa-message",  "message-btns");
     } else {
-        messageIcn.classList.add("fa-solid", "fa-message",  "message-btns")
-    }
-    countWrapper.appendChild(messageIcn)
+        messageIcn.classList.add("fa-solid", "fa-message",  "message-btns");
+    };
+    countWrapper.appendChild(messageIcn);
     // like count wrapper
-    const likeWrapper = document.createElement("div")
-    likeWrapper.classList.add("count-icn-wrapper")
-    socialIcnsWrapper.appendChild(likeWrapper)
-    likeWrapper.id = "post-like-wrapper"
+    const likeWrapper = document.createElement("div");
+    likeWrapper.classList.add("count-icn-wrapper");
+    socialIcnsWrapper.appendChild(likeWrapper);
+    likeWrapper.id = "post-like-wrapper";
     // like count
-    const likeCount = document.createElement("p")
-    likeCount.textContent = element.post_details.likes
-    likeWrapper.appendChild(likeCount)
+    const likeCount = document.createElement("p");
+    likeCount.textContent = element.post_details.likes;
+    likeWrapper.appendChild(likeCount);
     // like Icn
-    const likeIcn = document.createElement("i")
+    const likeIcn = document.createElement("i");
     // Is post liked by user ? 
-        if(!element.post_details.liked_by_user){
-          likeIcn.classList.add("fa-regular", "fa-heart",  "message-btns")
+    if(!element.post_details.liked_by_user){
+        likeIcn.classList.add("fa-regular", "fa-heart",  "message-btns")
     } else {
-          likeIcn.classList.add("fa-solid", "fa-heart",  "message-btns")
-    }
-    likeWrapper.appendChild(likeIcn)
-}
+        likeIcn.classList.add("fa-solid", "fa-heart",  "message-btns")
+    };
+    likeWrapper.appendChild(likeIcn);
+};
 
-// Render forum 
+// Save forum infos in STATE variable
 export function setForumParam(res){
     Object.assign(STATE, {
         forumTotalPages: res.total_pages,
@@ -126,14 +124,15 @@ export function setForumParam(res){
 
 // Truncate post description if text is too long
 function truncateText(text){
-    const string = String(text)
+    const string = String(text);
     const maxLength = 150;
     if (string.length > maxLength){
         return string.slice(0, maxLength) + "...";
-    }
-    return string
+    };
+    return string;
 };
 
+// Render forum posts
 export function renderForum(){
     // Reset html
     DOM.forumBody().innerHTML = '';
@@ -155,47 +154,59 @@ export function renderForum(){
 };
 
 
-// Send a new post button
+// Open new post pop up
 DOM.createNewPostBtn().addEventListener("click", () => {
     show(DOM.newPostPopup());
-    const cardCover = document.querySelectorAll('.post-body-right')
-    cardCover.forEach(el => hide(el))
-    DOM.newPostTitle().focus()
+    DOM.newPostTitle().focus();
 });
 
+// Send a new post
 DOM.sendNewPostBtn().addEventListener("click", async () => {
+    // Prevent missing fields
+    if(!DOM.newPostTitle().value || !DOM.newPostDescription().value){
+        alert("Error : some fields are missing")
+        return
+    };
+    // Save post to DB
     const newPost = await post(DOM.newPostTitle().value, DOM.newPostDescription().value, STATE.currentUser["user_id"]);
+    // Reload post list
     const forumRes = await loadForum(STATE.currentUser["user_id"]);
+    // Save forum data
     setForumParam(forumRes);
+    // Render forum posts
     renderForum();
+    // Check for errors
     displayPostStatusMessage(newPost.status);
+    // Switch sections display
     toggleSections([DOM.newPostPopup()], [DOM.postStatusMessage()]);
+    // Clean new post inputs
     cleanInputs([DOM.newPostDescription(), DOM.newPostTitle()]);
-    const cardCover = document.querySelectorAll('.post-body-right')
-    cardCover.forEach(el => show(el))
 }); 
 
+// Close new post pop up
 DOM.cancelNewPostBtn().addEventListener("click", async () => {
     hide(DOM.newPostPopup());
     cleanInputs([DOM.newPostDescription(), DOM.newPostTitle()]);
-    const cardCover = document.querySelectorAll('.post-body-right')
-    cardCover.forEach(el => show(el))
 });
 
-// Forum pages navigation
+// Forum pages navigation - click on next
 DOM.forumNextBtn().addEventListener("click", async () => {
+    // Increase page counter
     if (STATE.forumPage < STATE.forumTotalPages) {
         STATE.forumPage++;
     };
+    // Go to next page
     renderForum();
 });
 
+// Forum pages navigation - click on previous
 DOM.forumPrevBtn().addEventListener("click", async () => {
+    // Decrease page counter
     if (STATE.forumPage > 1) {
         STATE.forumPage--;
     };
+    // Go to previous page
     renderForum();
-
 });
 
 // Display new post validation message
@@ -213,8 +224,8 @@ async function displayPostStatusMessage(status) {
 };
 
 // Check profile pop up
-
 function displayCheckProfileInfos(user){
+    // Display clicked user infos in pop up
     DOM.checkProfileLastName().textContent = user.last_name;
     DOM.checkProfileDescription().textContent = user.description;
     DOM.checkProfileEmail().textContent = user.email;
@@ -222,8 +233,8 @@ function displayCheckProfileInfos(user){
     DOM.checkImage().style.background = `url(${user.image_url})`;
     DOM.checkImage().style.backgroundSize = 'cover';
     DOM.checkImage().style.backgroundPosition = 'center';
+};
 
-}
 // Check for click on forum-post profile image
 document.body.addEventListener("click", (e) => {
     if (
@@ -232,71 +243,74 @@ document.body.addEventListener("click", (e) => {
         e.target.id === "post-user-name" ||
         e.target.id === "post-date"
     ){
-        show(DOM.checkProfilePopup())
-        const cardCover = document.querySelectorAll('.post-body-right')
-        cardCover.forEach(el => hide(el))
-    }
-})
+        // Open clicked user profile infos
+        show(DOM.checkProfilePopup());
+        const cardCover = document.querySelectorAll('.post-body-right');
+        cardCover.forEach(el => hide(el));
+    };
+});
 
 // Check for click on forum-post body
 document.body.addEventListener("click", async (e) => {
     // If a post is clicked
     if (e.target.classList.contains("large-card-cover")){
-        const postEl = e.target.closest('.large-card')
-        if (!postEl) return
+        const postEl = e.target.closest('.large-card');
+        if (!postEl) return;
         // Save clicked post ID
-        const postId = Number(postEl.dataset.postId)
-        gotoAnswers(postId)
-    }
-})
+        const postId = Number(postEl.dataset.postId);
+        gotoAnswers(postId);
+    };
+});
 
+// See answers to a post
 export async function gotoAnswers(postId){
     // Find corresponding post data saved in state
-        STATE.clickedPost = STATE.forumPosts.find(p => p.post_details.id === postId)
+        STATE.clickedPost = STATE.forumPosts.find(p => p.post_details.id === postId);
         // Launch fetch to get all answers to this post
-        const messageList = await getAnswers(postId, STATE.currentUser.user_id)
+        const messageList = await getAnswers(postId, STATE.currentUser.user_id);
         // Save answer list in STATE
-        STATE.messages = messageList
+        STATE.messages = messageList;
         // Did user like ? 
         if (messageList.liked_by_user === true){
-            DOM.ogPostLikeBtn().classList.remove("fa-regular")
-            DOM.ogPostLikeBtn().classList.add("fa-solid")
-        }
+            DOM.ogPostLikeBtn().classList.remove("fa-regular");
+            DOM.ogPostLikeBtn().classList.add("fa-solid");
+        };
         // Inject content of focused post in existing HTML
-        renderFocusedPost(STATE.clickedPost)
+        renderFocusedPost(STATE.clickedPost);
         // Create HTML for each answer
-        renderAnswers(messageList)
+        renderAnswers(messageList);
         // Did user like this post ? 
-        renderLikeIcn()
+        renderLikeIcn();
         // Toggle sections
-        toggleSections([DOM.forumMainSection()], [DOM.forumMessageSection()])
-    }
+        toggleSections([DOM.forumMainSection()], [DOM.forumMessageSection()]);
+    };
 
-
+// Close check profile pop up
 DOM.cancelCheckBtn().addEventListener("click", () => {
-    hide(DOM.checkProfilePopup())
-    const cardCover = document.querySelectorAll('.post-body-right')
-    cardCover.forEach(el => show(el))
-})
+    hide(DOM.checkProfilePopup());
+    const cardCover = document.querySelectorAll('.post-body-right');
+    cardCover.forEach(el => show(el));
+});
 
+// Open check profile pop up
 document.body.addEventListener("click", (e) => {
     const postEl = e.target.closest(".large-card");
     if (!postEl) return;
-    const postId = Number(postEl.dataset.postId)
+    const postId = Number(postEl.dataset.postId);
     const postData = STATE.forumPosts.find(p => p.post_details.id === postId);
-    displayCheckProfileInfos(postData.user_details)
-})
+    displayCheckProfileInfos(postData.user_details);
+});
 
+// Display original post when user clicks on a post
 function renderFocusedPost(post){
     // Display post title
-    DOM.messagesPostTitle().textContent = post.post_details.title
+    DOM.messagesPostTitle().textContent = post.post_details.title;
     // Display post description
-    DOM.messagesPostDescription().textContent = post.post_details.description
+    DOM.messagesPostDescription().textContent = post.post_details.description;
     // Display answer count
-    DOM.ogPostMessageCounter().textContent = post.post_details.answers
+    DOM.ogPostMessageCounter().textContent = post.post_details.answers;
     // Display like count on post
-    DOM.ogPostLikeCounter().textContent = post.post_details.likes
+    DOM.ogPostLikeCounter().textContent = post.post_details.likes;
     // Did user answer ?
-    toggleFocusedPostAnswers("load")
- 
-}
+    toggleFocusedPostAnswers("load");
+};

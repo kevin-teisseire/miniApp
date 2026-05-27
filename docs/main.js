@@ -1,11 +1,15 @@
-import "./config.js"
-import "./dom.js"
-import "./navigation.js"
-import "./UI.js"
-import "./state.js"
-import "./auth.js"
-import "./profile.js"
-import "./forum.js"
-import "./API.js"
-import "./answers.js"
-import "./search.js"
+/* ========================
+            Main
+=========================== */
+
+import "./config.js";
+import "./dom.js";
+import "./navigation.js";
+import "./UI.js";
+import "./state.js";
+import "./auth.js";
+import "./profile.js";
+import "./forum.js";
+import "./API.js";
+import "./answers.js";
+import "./search.js";

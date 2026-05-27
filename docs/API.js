@@ -65,19 +65,16 @@ export async function uploadForm(formData){
 };
 
 export async function loadForum(user_id){
-    console.log("loadForum: user_id = ", user_id )
     const res = await fetch(`${API_URL}/get-forum?user_id=${user_id}`, {
         method: "GET"
     })
     const data = await res.json();
     return data;
-    console.log(data)
 };
 
 /* ------ Forum ------ */
 
 export async function post(title, description, user_id){
-    console.log(user_id)
     const res = await fetch(`${API_URL}/post`, {
         method: "POST",
         headers: {
@@ -106,17 +103,17 @@ export async function postAnswer(message, post_id, user_id){
             user_id: user_id
         })
     })
-    const data = await res.json()
-    return data
-}
+    const data = await res.json();
+    return data;
+};
 
 export async function getAnswers(post_id, user_id){
     const res = await fetch(`${API_URL}/get-answers?post_id=${post_id}&user_id=${user_id}`, {
         method: "GET",
     })
-    const data = await res.json()
-    return data
-}
+    const data = await res.json();
+    return data;
+};
 
 /* ------ Like system ------*/
 
@@ -130,9 +127,9 @@ export async function increaseLikes(post_id, user_id){
             post_id: post_id,
             user_id: user_id
         })
-    })
-    const data = await res.json()
-    return data
+    });
+    const data = await res.json();
+    return data;
 }
 
 export async function decreaseLikes(post_id, user_id){
@@ -145,9 +142,9 @@ export async function decreaseLikes(post_id, user_id){
             post_id: post_id,
             user_id: user_id
         })
-    })
-    const data = await res.json()
-    return data
+    });
+    const data = await res.json();
+    return data;
     
 }
 
@@ -157,8 +154,8 @@ export async function fetchPosts(query){
     const res = await fetch(`${API_URL}/search-posts?user_query=${query}`, {
         method: "GET",
     });
-    const data = await res.json()
-    return data
+    const data = await res.json();
+    return data;
 };
 
 

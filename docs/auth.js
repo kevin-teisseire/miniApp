@@ -1,3 +1,7 @@
+/* ========================
+        Authentification
+=========================== */
+
 import { show, hide, toggleSections, cleanInputs } from "./UI.js";
 import { loadForum, login, signUp } from "./API.js";
 import { renderForum, setForumParam } from "./forum.js";
@@ -5,10 +9,6 @@ import { STATE } from "./state.js";
 import { displayInfos } from "./profile.js";
 import { showMenu, hideMenu } from "./navigation.js";
 import { DOM } from "./dom.js";
-
-/* ========================
-        Authentification
-=========================== */
 
 // Login text link to signup
 DOM.signupTxt().addEventListener('click', () => {
@@ -41,7 +41,7 @@ async function logUserIn(){
     if (isLoading) return;
     isLoading = true;
     try{
-        const email = DOM.loginEmail().value;
+        const email = DOM.loginEmail().value.toLowerCase();
         const password = DOM.loginPassword().value
         // Check infos missing
         if (!email || !password){
@@ -62,7 +62,7 @@ async function logUserIn(){
             showMenu(DOM.profileMenu());
         // User not found in DB
         } else {
-            show(DOM.error_wrongCred);
+            show(DOM.error_wrongCred());
         };
     } finally {
         isLoading = false;
@@ -78,18 +78,23 @@ async function signUserUp(){
     // Save input values
     const first_name = DOM.signupfirstName().value;
     const last_name = DOM.signuplastName().value;
-    const email = DOM.signupEmail().value;
+    const email = DOM.signupEmail().value.toLowerCase();
     const password = DOM.signupPassword().value;
+    const pwConf = DOM.signupPwConf().value;
     // Check field values
     if (!first_name || !last_name || !email || !password){
         alert("Some fields are missing");
     } else {
-        const res = await signUp(first_name, last_name, email, password);
-        if (res.data.status === "success"){
-            setCurrentUser(res.user);
-            toggleSections([DOM.signupWrapper()], [DOM.loginWrapper()]);
-        } else if (res.data.status === "error" && res.data.message === "user exists"){
-           show(DOM.error_userExists());
+        if (password != pwConf){
+            alert("Password must match confirmation password");
+        } else {
+            const res = await signUp(first_name, last_name, email, password);
+            if (res.data.status === "success"){
+                setCurrentUser(res.user);
+                toggleSections([DOM.signupWrapper()], [DOM.loginWrapper()]);
+            } else if (res.data.status === "error" && res.data.message === "user exists"){
+                show(DOM.error_userExists());
+            };
         };
     };
 };

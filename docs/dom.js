@@ -1,4 +1,9 @@
-const get = (id) => document.getElementById(id)
+/* ========================
+            DOM
+=========================== */
+
+// Getter architecture
+const get = (id) => document.getElementById(id);
 
 export const DOM = {
     signupTxt: () => get('signup-txt'),
@@ -76,12 +81,12 @@ export const DOM = {
     signupfirstName: () => get('first-name-ipt'),
     signuplastName: () => get('last-name-ipt'),
     signupEmail: () => get('signup-email-ipt'),
-    signupPassword: () => get('signup-pw-ipt'), 
+    signupPassword: () => get('signup-pw-ipt'),
+    signupPwConf: () => get('pw-conf-ipt'),
     searchBar: () => get('search-bar'),
     searchResults: () => get('search-results'),
     searchViewBtn: () => get('search-view-btn')
-}
+};
 
-window.DOM = DOM
 
 

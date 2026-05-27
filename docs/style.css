@@ -97,11 +97,13 @@ input, textarea{
     border: 1px;
     height: 35px;
     padding: 5px;
+    background-color: var(--bg-input);
 }
 
 input::placeholder{
     color: black;
 }
+
 
 .input-wrapper{
     width: 100%;
@@ -127,16 +129,20 @@ em{
 }
 
 .auth-btns{
-    display: inline-block;
-    max-width: 400px;
+    display: flex;
+    align-items: center;
     border-radius: var(--btn-radius);
-    padding: 5px 20px;
     cursor: pointer;
     transition: all 0.3s ease;
     border: 1px solid var(--border);
-    padding: 10px 60px;
+    padding: 5px;
     font-weight: bold;
     letter-spacing: 1px;
+    height: 40px;
+    width: 100%;
+    justify-content: center;
+    max-width: 200px;
+    border-radius: var(--btn-radius);
 }
 
 .auth-btns.validate{
@@ -157,6 +163,13 @@ em{
 .auth-btns.cancel:hover{
     background-color: var(--bg-button-main);
     color: white;
+}
+
+#login-btn{
+    height: 62px;
+}    
+#signup-btn{
+    height: 56px;
 }
 
 
@@ -375,6 +388,7 @@ ul{
     row-gap: 10px;
     width: 100%;
     align-items: center;
+    justify-content: center;
 }
 
 .large-card{
@@ -698,7 +712,7 @@ textarea::placeholder {
 /* ------ Search section -------*/
 
 .search-ipt{
-    border: 1px solid;
+    border: 1px solid var(--border);
     height: 35px;
     flex: 1;
     padding: 0px 10px;
