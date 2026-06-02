@@ -38,14 +38,12 @@ function renderFoundPosts(element) {
     const post = document.createElement("div");
     post.classList.add("search-card");
     post.id = "post";
-    console.log("element: ", element)
     post.dataset.postId = element.id // Saving post id for later
     DOM.searchResults().appendChild(post);
 
     // Get user data
     const postId = Number(post.dataset.postId);
     const postData = STATE.forumPosts.find(p => p.post_details.id === postId);
-    console.log(postData)
     const userDetails = postData.user_details;
 
     // Creation date
