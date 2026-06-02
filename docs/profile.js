@@ -85,6 +85,7 @@ DOM.formSubmitBtn().addEventListener("click", async (e) => {
 // Cancel modifications button
 DOM.cancelBtn().addEventListener("click", () => {
     toggleSections([DOM.profileForm()], [DOM.profileInfos()]);
+    cleanInputs([DOM.modifyName(), DOM.modifySurname(), DOM.modifyEmail(), DOM.modifyDescription()])
 });
 
 // Modify user infos button
